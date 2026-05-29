@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitor Kuis — Kelas Rabu</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue:#2563eb; --blue-lt:#eff4ff; --black:#0f172a;
+  --gray:#64748b; --gray-lt:#f8fafc; --border:#e2e8f0;
+  --success:#16a34a; --success-lt:#f0fdf4;
+  --danger:#dc2626;  --danger-lt:#fef2f2;
+  --warn:#d97706;    --warn-lt:#fffbeb;
+  --surface:#fff; --bg:#f5f6fa; --radius:12px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.05);
+}
+body { background:var(--bg); color:var(--black); font-family:'Poppins',sans-serif; font-size:14px; min-height:100vh; }
+.wrap { max-width:960px; margin:0 auto; padding:32px 20px 60px; }
+
+/* LOGIN */
+#loginScreen {
+  max-width:380px; margin:80px auto;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:36px 28px; box-shadow:var(--shadow);
+  text-align:center;
+}
+#loginScreen h2 { font-size:20px; font-weight:700; margin-bottom:6px; }
+#loginScreen p  { font-size:13px; color:var(--gray); margin-bottom:24px; }
+#loginScreen input {
+  width:100%; padding:12px 14px; border:1.5px solid var(--border);
+  border-radius:var(--radius); font-family:'Poppins',sans-serif;
+  font-size:14px; outline:none; margin-bottom:14px;
+  transition:border-color .18s;
+}
+#loginScreen input:focus { border-color:var(--blue); }
+.err-msg { color:var(--danger); font-size:12px; margin-bottom:10px; display:none; }
+
+/* BUTTONS */
+.btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:8px; padding:11px 22px; border-radius:var(--radius);
+  font-family:'Poppins',sans-serif; font-size:13px; font-weight:600;
+  cursor:pointer; border:none; transition:all .18s;
+}
+.btn-full { width:100%; }
+.btn-blue { background:var(--blue); color:#fff; }
+.btn-blue:hover { background:#1d4ed8; }
+.btn-gray { background:var(--gray-lt); color:var(--gray); border:1px solid var(--border); }
+.btn-gray:hover { background:#e2e8f0; }
+.btn-sm { padding:7px 14px; font-size:12px; }
+
+/* HEADER */
+.page-header {
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:12px; margin-bottom:24px;
+}
+.page-header h1 { font-size:20px; font-weight:700; }
+.page-header .sub { font-size:12px; color:var(--gray); }
+
+/* STAT CARDS */
+.stat-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+.stat-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:16px; box-shadow:var(--shadow);
+}
+.stat-card .val { font-size:28px; font-weight:700; margin-bottom:2px; }
+.stat-card .lbl { font-size:11px; color:var(--gray); font-weight:500; text-transform:uppercase; letter-spacing:.5px; }
+
+/* FILTER BAR */
+.filter-bar {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:14px 18px;
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  margin-bottom:16px; box-shadow:var(--shadow);
+}
+.filter-bar input, .filter-bar select {
+  padding:8px 12px; border:1px solid var(--border);
+  border-radius:8px; font-family:'Poppins',sans-serif;
+  font-size:13px; outline:none; background:var(--gray-lt);
+  transition:border-color .18s;
+}
+.filter-bar input:focus, .filter-bar select:focus { border-color:var(--blue); }
+.filter-bar input { flex:1; min-width:160px; }
+
+/* TABLE */
+.tbl-wrap {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow);
+}
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead th {
+  background:var(--blue-lt); color:var(--blue);
+  font-weight:600; padding:12px 14px; text-align:left;
+  border-bottom:2px solid #dbeafe; white-space:nowrap;
+  cursor:pointer; user-select:none;
+}
+thead th:hover { background:#dbeafe; }
+thead th .sort-icon { margin-left:4px; opacity:.5; }
+tbody tr { border-bottom:1px solid var(--border); transition:background .12s; }
+tbody tr:last-child { border-bottom:none; }
+tbody tr:hover { background:var(--gray-lt); }
+tbody td { padding:11px 14px; vertical-align:middle; }
+.td-nama { font-weight:600; color:var(--black); }
+.td-nim  { font-family:'Courier New',monospace; font-size:12px; color:var(--gray); }
+.td-skor { font-weight:700; }
+.td-attempt { text-align:center; }
+
+/* BADGE SKOR */
+.skor-badge {
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:3px 10px; border-radius:20px; font-size:12px; font-weight:600;
+}
+.skor-a { background:var(--success-lt); color:var(--success); }
+.skor-b { background:var(--blue-lt);    color:var(--blue); }
+.skor-c { background:var(--warn-lt);    color:var(--warn); }
+.skor-d { background:#fff7ed;           color:#ea580c; }
+.skor-e { background:var(--danger-lt);  color:var(--danger); }
+
+/* EMPTY / LOADING */
+.center-msg {
+  text-align:center; padding:48px 20px;
+  color:var(--gray); font-size:14px;
+}
+
+/* REFRESH BAR */
+.refresh-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:8px; font-size:12px; color:var(--gray);
+}
+
+/* DETAIL MODAL */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.4);
+  display:flex; align-items:center; justify-content:center;
+  z-index:100; padding:20px;
+}
+.modal {
+  background:#fff; border-radius:16px; padding:28px;
+  max-width:520px; width:100%; max-height:80vh; overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
+}
+.modal h3 { font-size:16px; font-weight:700; margin-bottom:16px; }
+.modal-close { float:right; cursor:pointer; font-size:20px; color:var(--gray); line-height:1; }
+.attempt-row {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 0; border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+.attempt-row:last-child { border-bottom:none; }
+.att-num { font-weight:600; color:var(--gray); width:24px; }
+.att-skor { font-weight:700; }
+.att-meta { color:var(--gray); font-size:12px; margin-left:auto; text-align:right; }
+
+@media(max-width:680px) {
+  .stat-row { grid-template-columns:1fr 1fr; }
+  table { font-size:12px; }
+  tbody td { padding:9px 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div style="font-size:32px;margin-bottom:12px">🔐</div>
+  <h2>Monitor Kuis</h2>
+  <p>Kelas Rabu · Agile &amp; Scrum<br>Masukkan password untuk masuk.</p>
+  <div class="err-msg" id="errMsg">Password salah. Coba lagi.</div>
+  <input type="password" id="pwInput" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()" />
+  <button class="btn btn-blue btn-full" onclick="checkPw()">Masuk →</button>
+</div>
+
+<!-- MONITOR SCREEN -->
+<div class="wrap" id="monitorScreen" style="display:none">
+
+  <div class="page-header">
+    <div>
+      <h1>📊 Monitor Hasil Kuis</h1>
+      <div class="sub">Kelas Rabu · Agile &amp; Scrum · STT Nurul Fikri</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-gray btn-sm" onclick="loadData()">🔄 Refresh</button>
+      <button class="btn btn-gray btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="btn btn-gray btn-sm" onclick="window.print()">🖨 Print</button>
+    </div>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="val" id="stTotal" style="color:var(--blue)">—</div>
+      <div class="lbl">Total Attempt</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="stPeserta" style="color:var(--black)">—</div>
+      <div class="lbl">Peserta Unik</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="stRataRata" style="color:var(--warn)">—</div>
+      <div class="lbl">Rata-rata Skor</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="stTertinggi" style="color:var(--success)">—</div>
+      <div class="lbl">Skor Tertinggi</div>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <input type="text" id="searchInput" placeholder="🔍 Cari nama atau NIM..." oninput="renderTable()" />
+    <select id="filterSkor" onchange="renderTable()">
+      <option value="">Semua Skor</option>
+      <option value="85">A (≥85%)</option>
+      <option value="75">B (≥75%)</option>
+      <option value="65">C (≥65%)</option>
+      <option value="0">D/E (<65%)</option>
+    </select>
+    <select id="viewMode" onchange="renderTable()">
+      <option value="best">Tampilkan Skor Terbaik</option>
+      <option value="last">Tampilkan Skor Terakhir</option>
+      <option value="all">Semua Attempt</option>
+    </select>
+  </div>
+
+  <!-- REFRESH INFO -->
+  <div class="refresh-bar">
+    <span id="lastRefresh">Belum dimuat</span>
+    <span id="rowCount"></span>
+  </div>
+
+  <!-- TABLE -->
+  <div class="tbl-wrap">
+    <div id="tableArea"><div class="center-msg">⏳ Memuat data...</div></div>
+  </div>
+
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="modalOverlay" style="display:none" onclick="closeModal(event)">
+  <div class="modal" id="modalContent">
+    <span class="modal-close" onclick="closeModal()">×</span>
+    <h3 id="modalTitle"></h3>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ── KONFIGURASI ──────────────────────────────
+const MONITOR_PASSWORD = 'nurul2024';   // ← ganti password di sini
+const SCRIPT_URL = 'GANTI_DENGAN_URL_APPS_SCRIPT';  // ← sama dengan di kuis
+// ─────────────────────────────────────────────
+
+let allData   = [];   // semua baris dari Sheets
+let sortCol   = 'skor';
+let sortDir   = -1;   // -1 = desc, 1 = asc
+
+// LOGIN
+function checkPw() {
+  const val = document.getElementById('pwInput').value;
+  if (val === MONITOR_PASSWORD) {
+    document.getElementById('loginScreen').style.display  = 'none';
+    document.getElementById('monitorScreen').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('errMsg').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+}
+
+// LOAD DATA dari Apps Script
+async function loadData() {
+  document.getElementById('tableArea').innerHTML = '<div class="center-msg">⏳ Memuat data dari Google Sheets...</div>';
+
+  if (SCRIPT_URL === 'GANTI_DENGAN_URL_APPS_SCRIPT') {
+    loadDemoData();
+    return;
+  }
+
+  try {
+    const res  = await fetch(SCRIPT_URL + '?action=read');
+    const json = await res.json();
+    if (json.data) {
+      allData = json.data;
+      updateStats();
+      renderTable();
+      document.getElementById('lastRefresh').textContent =
+        'Terakhir diperbarui: ' + new Date().toLocaleString('id-ID');
+    }
+  } catch(e) {
+    document.getElementById('tableArea').innerHTML =
+      '<div class="center-msg">⚠️ Gagal memuat data.<br><small>Pastikan SCRIPT_URL sudah diisi dengan benar.</small></div>';
+  }
+}
+
+// DEMO DATA (tampil kalau SCRIPT_URL belum diisi)
+function loadDemoData() {
+  allData = [
+    { timestamp:'29/05/2026, 10:32', nama:'TES DOSEN', nim:'0000', kelas:'Rabu', skor:87, benar:26, salah:4, durasi:'12 mnt 10 dtk' },
+    { timestamp:'29/05/2026, 10:45', nama:'AHMAD HAYDAR', nim:'12345', kelas:'Rabu', skor:73, benar:22, salah:8, durasi:'14 mnt 05 dtk' },
+    { timestamp:'29/05/2026, 10:52', nama:'AISYAH DEWI GAYATRI', nim:'12346', kelas:'Rabu', skor:80, benar:24, salah:6, durasi:'11 mnt 30 dtk' },
+    { timestamp:'29/05/2026, 11:05', nama:'AHMAD HAYDAR', nim:'12345', kelas:'Rabu', skor:90, benar:27, salah:3, durasi:'10 mnt 20 dtk' },
+    { timestamp:'29/05/2026, 11:10', nama:'NABILA ANGGRAINI', nim:'12347', kelas:'Rabu', skor:60, benar:18, salah:12, durasi:'15 mnt 00 dtk' },
+    { timestamp:'29/05/2026, 11:15', nama:'FAUZAN YUSUF', nim:'12348', kelas:'Rabu', skor:93, benar:28, salah:2, durasi:'9 mnt 45 dtk' },
+  ];
+  updateStats();
+  renderTable();
+  document.getElementById('lastRefresh').textContent = '⚠️ Mode demo — isi SCRIPT_URL untuk data nyata';
+}
+
+function updateStats() {
+  const total = allData.length;
+  const unik  = new Set(allData.map(r => r.nim || r.nama)).size;
+  const avg   = total ? Math.round(allData.reduce((s,r)=>s+Number(r.skor),0)/total) : 0;
+  const max   = total ? Math.max(...allData.map(r=>Number(r.skor))) : 0;
+  document.getElementById('stTotal').textContent    = total;
+  document.getElementById('stPeserta').textContent  = unik;
+  document.getElementById('stRataRata').textContent = avg + '%';
+  document.getElementById('stTertinggi').textContent = max + '%';
+}
+
+function renderTable() {
+  const search  = document.getElementById('searchInput').value.toLowerCase();
+  const fSkor   = document.getElementById('filterSkor').value;
+  const viewMode = document.getElementById('viewMode').value;
+
+  // Filter
+  let filtered = allData.filter(r => {
+    const matchSearch = (r.nama||'').toLowerCase().includes(search) ||
+                        (r.nim||'').toLowerCase().includes(search);
+    if (!matchSearch) return false;
+    if (fSkor === '85') return Number(r.skor) >= 85;
+    if (fSkor === '75') return Number(r.skor) >= 75 && Number(r.skor) < 85;
+    if (fSkor === '65') return Number(r.skor) >= 65 && Number(r.skor) < 75;
+    if (fSkor === '0')  return Number(r.skor) < 65;
+    return true;
+  });
+
+  // Group by mahasiswa
+  const grouped = {};
+  filtered.forEach(r => {
+    const key = (r.nim || r.nama).trim();
+    if (!grouped[key]) grouped[key] = { nama:r.nama, nim:r.nim, attempts:[] };
+    grouped[key].attempts.push(r);
+  });
+
+  // Tentukan baris yang ditampilkan
+  let rows = [];
+  if (viewMode === 'all') {
+    rows = filtered.map(r => ({ ...r, attempt: null }));
+  } else {
+    Object.values(grouped).forEach(g => {
+      const sorted = [...g.attempts].sort((a,b) => new Date(b.timestamp)-new Date(a.timestamp));
+      let pick;
+      if (viewMode === 'best') pick = sorted.reduce((a,b) => Number(a.skor)>=Number(b.skor)?a:b);
+      else                      pick = sorted[0];
+      rows.push({ ...pick, attemptCount: g.attempts.length, groupKey: g.nim||g.nama });
+    });
+  }
+
+  // Sort
+  rows.sort((a,b) => {
+    let va = a[sortCol], vb = b[sortCol];
+    if (sortCol === 'skor' || sortCol === 'benar') { va = Number(va); vb = Number(vb); }
+    if (va < vb) return sortDir;
+    if (va > vb) return -sortDir;
+    return 0;
+  });
+
+  document.getElementById('rowCount').textContent = rows.length + ' baris ditampilkan';
+
+  if (!rows.length) {
+    document.getElementById('tableArea').innerHTML = '<div class="center-msg">Tidak ada data ditemukan.</div>';
+    return;
+  }
+
+  const cols = viewMode === 'all'
+    ? ['#','Nama','NIM','Waktu','Benar','Salah','Skor','Durasi']
+    : ['#','Nama','NIM','Attempt','Skor Terbaik / Terakhir','Benar','Durasi','Waktu'];
+
+  let html = `<table><thead><tr>`;
+  cols.forEach((c,i) => {
+    const key = ['','nama','nim','timestamp','benar','salah','skor','durasi','attemptCount','skor'][i] || '';
+    html += `<th onclick="sortBy('${key}')">${c} <span class="sort-icon">${sortCol===key?(sortDir===-1?'↓':'↑'):'↕'}</span></th>`;
+  });
+  html += `</tr></thead><tbody>`;
+
+  rows.forEach((r, idx) => {
+    const sBadge = skorBadge(Number(r.skor));
+    if (viewMode === 'all') {
+      html += `<tr>
+        <td style="color:var(--gray)">${idx+1}</td>
+        <td class="td-nama">${r.nama}</td>
+        <td class="td-nim">${r.nim||'—'}</td>
+        <td style="color:var(--gray);font-size:12px">${r.timestamp||'—'}</td>
+        <td style="color:var(--success);font-weight:600">${r.benar}</td>
+        <td style="color:var(--danger)">${r.salah}</td>
+        <td class="td-skor">${sBadge}</td>
+        <td style="color:var(--gray);font-size:12px">${r.durasi||'—'}</td>
+      </tr>`;
+    } else {
+      const key = r.groupKey || r.nim || r.nama;
+      html += `<tr>
+        <td style="color:var(--gray)">${idx+1}</td>
+        <td class="td-nama" style="cursor:pointer;text-decoration:underline;text-decoration-color:#cbd5e1"
+            onclick="showDetail('${key.replace(/'/g,"\\'")}')">
+          ${r.nama}
+        </td>
+        <td class="td-nim">${r.nim||'—'}</td>
+        <td class="td-attempt"><span style="background:var(--blue-lt);color:var(--blue);padding:2px 8px;border-radius:12px;font-size:12px;font-weight:600">${r.attemptCount}×</span></td>
+        <td class="td-skor">${sBadge}</td>
+        <td style="color:var(--success);font-weight:600">${r.benar}</td>
+        <td style="color:var(--gray);font-size:12px">${r.durasi||'—'}</td>
+        <td style="color:var(--gray);font-size:12px">${r.timestamp||'—'}</td>
+      </tr>`;
+    }
+  });
+
+  html += `</tbody></table>`;
+  document.getElementById('tableArea').innerHTML = html;
+}
+
+function skorBadge(s) {
+  let cls = s>=85?'skor-a':s>=75?'skor-b':s>=65?'skor-c':s>=55?'skor-d':'skor-e';
+  let gr  = s>=85?'A':s>=75?'B':s>=65?'C':s>=55?'D':'E';
+  return `<span class="skor-badge ${cls}">${gr} · ${s}%</span>`;
+}
+
+function sortBy(col) {
+  if (!col) return;
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = -1; }
+  renderTable();
+}
+
+function showDetail(key) {
+  const group = allData.filter(r => (r.groupKey||r.nim||r.nama).trim() === key || (r.nim||r.nama).trim() === key);
+  if (!group.length) return;
+  const nama = group[0].nama;
+  const sorted = [...group].sort((a,b) => new Date(b.timestamp)-new Date(a.timestamp));
+  document.getElementById('modalTitle').textContent = nama + ' — Riwayat Attempt';
+  let html = '';
+  sorted.forEach((r,i) => {
+    html += `<div class="attempt-row">
+      <span class="att-num">#${sorted.length-i}</span>
+      <span class="att-skor">${skorBadge(Number(r.skor))}</span>
+      <span style="color:var(--success);font-size:13px">✓${r.benar}</span>
+      <span style="color:var(--danger);font-size:13px">✗${r.salah}</span>
+      <div class="att-meta">${r.durasi||'—'}<br>${r.timestamp||'—'}</div>
+    </div>`;
+  });
+  document.getElementById('modalBody').innerHTML = html;
+  document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modalOverlay'))
+    document.getElementById('modalOverlay').style.display = 'none';
+}
+
+function exportCSV() {
+  if (!allData.length) return;
+  const headers = ['Timestamp','Nama','NIM','Kelas','Skor (%)','Benar','Salah','Durasi'];
+  const rows = allData.map(r => [
+    r.timestamp, r.nama, r.nim, r.kelas, r.skor, r.benar, r.salah, r.durasi
+  ].map(v => '"'+(v||'').toString().replace(/"/g,'""')+'"').join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob(['\uFEFF'+csv], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'hasil_kuis_kelas_rabu_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+</script>
+</body>
+</html>
