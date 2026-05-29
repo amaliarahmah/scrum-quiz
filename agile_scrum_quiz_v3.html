@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agile & Scrum Quiz — Kelas Rabu</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --white:   #ffffff;
+  --bg:      #f5f6fa;
+  --surface: #ffffff;
+  --border:  #e2e5ef;
+  --blue:    #2563eb;
+  --blue-lt: #eff4ff;
+  --blue-md: #dbeafe;
+  --black:   #0f172a;
+  --gray:    #64748b;
+  --gray-lt: #f1f5f9;
+  --success: #16a34a;
+  --success-lt: #f0fdf4;
+  --danger:  #dc2626;
+  --danger-lt: #fef2f2;
+  --warn:    #d97706;
+  --warn-lt: #fffbeb;
+  --radius:  12px;
+  --shadow:  0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.1);
+}
+
+body {
+  background: var(--bg);
+  color: var(--black);
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+/* ── HEADER ── */
+.site-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.site-header .kelas-tag {
+  display: inline-block;
+  background: var(--blue-lt);
+  color: var(--blue);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+.site-header h1 {
+  font-size: clamp(22px, 4vw, 30px);
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 6px;
+}
+.site-header .meta {
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 500;
+}
+.site-header .note {
+  margin-top: 8px;
+  color: var(--gray);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: var(--shadow);
+}
+
+/* ── FORM ELEMENTS ── */
+.field { margin-bottom: 20px; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+}
+.field select,
+.field input[type="text"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: var(--black);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+.field select:focus,
+.field input[type="text"]:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+.field select option:first-child { color: var(--gray); }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 24px;
+  border-radius: var(--radius);
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.18s;
+  text-decoration: none;
+}
+.btn-full { width: 100%; }
+.btn-blue {
+  background: var(--blue);
+  color: #fff;
+}
+.btn-blue:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(37,99,235,0.3); }
+.btn-outline {
+  background: transparent;
+  color: var(--blue);
+  border: 1.5px solid var(--blue);
+}
+.btn-outline:hover { background: var(--blue-lt); }
+.btn-gray {
+  background: var(--gray-lt);
+  color: var(--gray);
+  border: 1.5px solid var(--border);
+}
+.btn-gray:hover { background: #e2e8f0; }
+.btn-sm { padding: 9px 18px; font-size: 13px; }
+
+/* ── QUIZ TOPBAR ── */
+.quiz-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+.q-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.score-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.chip {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.chip-ok  { background: var(--success-lt); color: var(--success); }
+.chip-err { background: var(--danger-lt);  color: var(--danger);  }
+
+/* ── TIMER ── */
+.timer-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.timer-ring { position: relative; width: 48px; height: 48px; flex-shrink: 0; }
+.timer-ring svg { transform: rotate(-90deg); }
+.timer-ring circle { fill: none; stroke-width: 3.5; stroke-linecap: round; }
+.t-bg  { stroke: var(--border); }
+.t-fg  { stroke: var(--blue); stroke-dasharray: 132; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear, stroke 0.3s; }
+.timer-num {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: var(--black);
+}
+
+/* ── PROGRESS ── */
+.progress-wrap { margin-bottom: 20px; }
+.progress-track {
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--blue);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.progress-text {
+  font-size: 11px;
+  color: var(--gray);
+  margin-top: 5px;
+  text-align: right;
+}
+
+/* ── QUESTION ── */
+.q-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--black);
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+
+/* ── OPTIONS ── */
+.options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--white);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--black);
+}
+.option:hover:not(.opt-disabled) {
+  border-color: var(--blue);
+  background: var(--blue-lt);
+}
+.option.opt-selected { border-color: var(--blue); background: var(--blue-lt); }
+.option.opt-correct  { border-color: var(--success); background: var(--success-lt); }
+.option.opt-wrong    { border-color: var(--danger);  background: var(--danger-lt);  }
+.option.opt-disabled { cursor: default; }
+
+.opt-key {
+  width: 26px; height: 26px;
+  border-radius: 7px;
+  background: var(--gray-lt);
+  color: var(--gray);
+  font-size: 12px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.option.opt-selected .opt-key { background: var(--blue); color: #fff; }
+.option.opt-correct  .opt-key { background: var(--success); color: #fff; }
+.option.opt-wrong    .opt-key { background: var(--danger);  color: #fff; }
+
+/* ── FEEDBACK ── */
+.feedback {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.55;
+  margin-bottom: 16px;
+  display: none;
+  animation: fadeUp 0.25s ease;
+}
+.feedback.show { display: block; }
+.fb-correct { background: var(--success-lt); color: #166534; border: 1px solid #bbf7d0; }
+.fb-wrong   { background: var(--danger-lt);  color: #991b1b; border: 1px solid #fecaca; }
+.fb-timeout { background: var(--warn-lt);    color: #92400e; border: 1px solid #fde68a; }
+
+/* ── ACTION ROW ── */
+.action-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 24px 0;
+}
+
+/* ── RESULT ── */
+.result-hero {
+  text-align: center;
+  padding: 32px 20px 24px;
+}
+.result-grade {
+  font-size: 72px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.result-pct {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: 4px;
+}
+.result-label { font-size: 15px; color: var(--gray); }
+.result-meta  { font-size: 12px; color: var(--gray); margin-top: 6px; }
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+.stat-box {
+  background: var(--gray-lt);
+  border-radius: var(--radius);
+  padding: 16px 10px;
+  text-align: center;
+}
+.stat-val { font-size: 26px; font-weight: 700; margin-bottom: 2px; }
+.stat-lbl { font-size: 11px; color: var(--gray); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.result-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+/* ── REVIEW ── */
+.review-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.rev-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 10px;
+  background: var(--white);
+}
+.rev-item.r-correct { border-left: 3px solid var(--success); }
+.rev-item.r-wrong   { border-left: 3px solid var(--danger); }
+.rev-item.r-timeout { border-left: 3px solid var(--warn); }
+.rev-num { font-size: 11px; font-weight: 600; color: var(--gray); margin-bottom: 5px; text-transform: uppercase; }
+.rev-q   { font-size: 13px; font-weight: 600; margin-bottom: 10px; line-height: 1.5; }
+.rev-ans { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; margin-bottom: 4px; }
+.rev-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.dot-ok  { background: var(--success); }
+.dot-err { background: var(--danger); }
+.dot-wrn { background: var(--warn); }
+.rev-exp { font-size: 12px; color: var(--gray); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes popIn {
+  0%   { transform:scale(0.8); opacity:0; }
+  70%  { transform:scale(1.05); }
+  100% { transform:scale(1); opacity:1; }
+}
+.pop { animation: popIn 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+/* ── PRINT ── */
+@media print {
+  body { background: white; }
+  .btn, .quiz-topbar, .progress-wrap, .action-row, .options { display: none !important; }
+  .card { box-shadow: none; border: 1px solid #ccc; }
+  .rev-item { break-inside: avoid; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 520px) {
+  .card { padding: 24px 18px; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .stat-box:last-child { grid-column: span 2; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="site-header">
+    <div class="kelas-tag">STT Terpadu Nurul Fikri · Manajemen Proyek</div>
+    <h1>Agile &amp; Scrum Quiz</h1>
+    <div class="meta">30 questions &nbsp;·&nbsp; 30 sec each</div>
+    <div class="note">Halaman otomatis berpindah ke soal berikutnya setiap 30 detik, baik ada atau tidak ada jawaban.</div>
+  </div>
+
+  <!-- ═══════════════ START SCREEN ═══════════════ -->
+  <div id="startScreen" class="card">
+
+    <div class="field">
+      <label>Nama Mahasiswa</label>
+      <select id="nameSelect">
+        <option value="" disabled selected>— Pilih nama —</option>
+        <option>ABDUL HAFID MUALIMIN</option>
+        <option>ADIBATUL HASANAH</option>
+        <option>ADYTIA SANJAYA</option>
+        <option>AFIF</option>
+        <option>AFIF KHAIRUN NUFUS</option>
+        <option>AFINA YASYFA</option>
+        <option>AHMAD DUL MUIS</option>
+        <option>AHMAD FAUZI EL MUBAROK</option>
+        <option>AHMAD FAUZIL 'AZHIM</option>
+        <option>AHMAD HAYDAR</option>
+        <option>AHMAD RIFAI</option>
+        <option>AISAH KHOIRUNISA</option>
+        <option>AISYAH DEWI GAYATRI</option>
+        <option>ANANDA YUFA NURHALIZA</option>
+        <option>ANGGIA DWI HIKMAH</option>
+        <option>ANISSA FEBRIAN</option>
+        <option>ANNISA NAILA YASMIN</option>
+        <option>ARIQ IQBAL</option>
+        <option>ARYA ILHAM PAMUNGKAS</option>
+        <option>ARYANA DWI ADITYA</option>
+        <option>ASTINA SYAPANI HASIBUAN</option>
+        <option>AULIA TATTYA RAHMA</option>
+        <option>AULYA RESKI</option>
+        <option>AURA NAJWA CHAIRUNISA</option>
+        <option>AZHAR MAULANA ACHMAD</option>
+        <option>AZRIL ILHAM PRAMUDYA</option>
+        <option>BALQIS FARAH KAMILAH MUHADI</option>
+        <option>BURHAN KALLAMULLAH</option>
+        <option>CINDI NOVIANTI</option>
+        <option>CLARRISA ISABELLA PUTRI</option>
+        <option>DANI FADLI HERMAWAN</option>
+        <option>DEA RAHAYU NURAENI</option>
+        <option>DEANANDA MEUTHIA</option>
+        <option>DENOVRI SYACHRIAZIIZ PRIBADI</option>
+        <option>DEWANGGA LISDI</option>
+        <option>ENAN</option>
+        <option>ENJUM JAMALUDIN</option>
+        <option>EVA ADAWIYAH</option>
+        <option>FAIRUZ GHINA MUFIDAH</option>
+        <option>FATHAN ANWAR</option>
+        <option>FATYA KHONSA MUTMAINAH</option>
+        <option>FAUZAN YUSUF</option>
+        <option>FAUZIAH NUR AZURA</option>
+        <option>FLAVIA FITRI RENATA</option>
+        <option>HAFIDH ALIM</option>
+        <option>HAIDAR ROZAN SODIQ</option>
+        <option>HAIFA MUZDALIFAH RAMADHANI</option>
+        <option>HAMIDA AULIA HAKIM</option>
+        <option>HASAN</option>
+        <option>HASNA AZZAHRA</option>
+        <option>IFFAT LUTHFIYAH</option>
+        <option>IKMAL RIZAL</option>
+        <option>ILHAM PRAYOGO SAMPURNO</option>
+        <option>IMTIYAZ MUFIDAH</option>
+        <option>KHANSA NABILAH</option>
+        <option>KIBTIA UMAROH</option>
+        <option>M. BAYU ANGGARA</option>
+        <option>MARISSA AZZAHRA</option>
+        <option>MAULA FATHAN GIBRAN LUBIS</option>
+        <option>MAYYUNI IKLA AZZAHRA</option>
+        <option>MUCHAMAD RAFIDZAL SUNARTO</option>
+        <option>MUHAMAD ADRIAN</option>
+        <option>MUHAMAD BUANA GUNTUR</option>
+        <option>MUHAMAD FADIL AZZAM</option>
+        <option>MUHAMAD FAISAL AKBAR</option>
+        <option>MUHAMAD HAMDANI</option>
+        <option>MUHAMAD IRFAN FADILAH</option>
+        <option>MUHAMAD IRFAN PRATAMA</option>
+        <option>MUHAMAD ZAINUL FACHRI HIMAWAN</option>
+        <option>MUHAMMAD AMIRUL IKHSANI</option>
+        <option>MUHAMMAD FAISHAL FATHUR RAHMAN</option>
+        <option>MUHAMMAD FIRDAUS</option>
+        <option>MUHAMMAD HUDZAIFAH ALI AL MUBAROK</option>
+        <option>MUHAMMAD IKMAL</option>
+        <option>MUHAMMAD IKROM</option>
+        <option>MUHAMMAD JA'FAR SHODIQ</option>
+        <option>MUHAMMAD NAUFAL AZIZ</option>
+        <option>MUHAMMAD PUTRA JUNIAR PRATAMA</option>
+        <option>MUHAMMAD PUTRA PRATAMA</option>
+        <option>MUHAMMAD SYAMIL</option>
+        <option>MUNTOFIAH</option>
+        <option>MUTHIA FADLY</option>
+        <option>NABILA ANGGRAINI</option>
+        <option>NADYA NURUS SAKINAH</option>
+        <option>NAILA SAKINAH DAPA</option>
+        <option>NAILAH HANA'</option>
+        <option>NAJWA AULIA</option>
+        <option>NAJWA LUTFIAH</option>
+        <option>NAJWA PUTRI SYAHRI</option>
+        <option>NAUVAL RAMADHAN KRISANI</option>
+        <option>NAWAF RAFIF AL HAKIM</option>
+        <option>NENG FAUZIYAH HASANAH</option>
+        <option>PUTRI</option>
+        <option>PUTRI NURRAHMAH</option>
+        <option>PUTRI SALWA</option>
+        <option>RAFI SETYA NANDIKA</option>
+        <option>RAFLI ACHMAD ZULFIKAR</option>
+        <option>RAHMAWATI IBRAHIM</option>
+        <option>RANGGA SAPUTRA</option>
+        <option>REGISTA CAHYANI</option>
+        <option>RESNA SEPTIANA</option>
+        <option>REZA MAULANA</option>
+        <option>RIFQI HUZAIFAH</option>
+        <option>SABIKAH RIFA MUSTAQIMAH</option>
+        <option>SAFFINA YULIANISA</option>
+        <option>SAIMA FITRI</option>
+        <option>SHABRINA MILADDINA</option>
+        <option>SHALAHUDDIN AL AYYUBI</option>
+        <option>SHINTA MAULIDA DISTIANDINI</option>
+        <option>SIPA FAUJIAH</option>
+        <option>SITI ASYIAH</option>
+        <option>SITI FATIMAH AZAHRA</option>
+        <option>SITI MUFATHONAH</option>
+        <option>SITI ROUDOTUL KHOIRIAH</option>
+        <option>SITI SOFIANI AZZAHRA</option>
+        <option>SUCI RAMADHANI</option>
+        <option>SYADDAD MUSLIM KAMIL</option>
+        <option>SYAFIRA AULIA RIZFI</option>
+        <option>SYAIDAH KHUMAIROH</option>
+        <option>SYIFA ADHA RIYANNI</option>
+        <option>TAUFIQQURRAHMAN</option>
+        <option>TAZKIAH BADZLINA</option>
+        <option>TIA RAMADHANI</option>
+        <option>ULAN</option>
+        <option>YUDHISTIRA TAUFIK</option>
+        <option>YULFA NUHA PRATINI</option>
+        <option>YUMNA DZAKIRAH</option>
+        <option>ZAHRA NABILA FAJRIYANI</option>
+        <option>ZAHRA NAUROH RAHMANI</option>
+        <option>ZAIDAAN AQIILAH DZIHNIE</option>
+        <option>ZHAFIRAH CHAIRUNNISA</option>
+        <option>ZILHA MELBALIS</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>NIM</label>
+      <input type="text" id="nimInput" placeholder="Masukkan NIM" maxlength="20" />
+    </div>
+
+    <button class="btn btn-blue btn-full" onclick="startQuiz()">Mulai Quiz →</button>
+  </div>
+
+  <!-- ═══════════════ QUIZ SCREEN ═══════════════ -->
+  <div id="quizScreen" style="display:none">
+
+    <div class="quiz-topbar">
+      <div>
+        <div class="q-label" id="qLabel">Question 1 of 30</div>
+        <div class="score-row">
+          <span class="chip chip-ok"  id="chipOk">✓ 0</span>
+          <span class="chip chip-err" id="chipErr">✗ 0</span>
+        </div>
+      </div>
+      <div class="timer-box">
+        <div class="timer-ring">
+          <svg width="48" height="48" viewBox="0 0 48 48">
+            <circle class="t-bg" cx="24" cy="24" r="21"/>
+            <circle class="t-fg" id="timerArc" cx="24" cy="24" r="21"/>
+          </svg>
+          <div class="timer-num" id="timerNum">30</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-track">
+        <div class="progress-fill" id="progFill" style="width:0%"></div>
+      </div>
+      <div class="progress-text" id="progText">0 / 30</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="optBox"></div>
+      <div class="feedback" id="feedbackBox"></div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn btn-gray btn-sm" id="skipBtn" onclick="skipQ()">Lewati</button>
+      <button class="btn btn-blue btn-sm" id="nextBtn" onclick="nextQ()" style="display:none">Lanjut →</button>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ RESULT SCREEN ═══════════════ -->
+  <div id="resultScreen" style="display:none">
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="result-hero">
+        <div class="result-grade" id="resGrade"></div>
+        <div class="result-pct"  id="resPct"></div>
+        <div class="result-label" id="resLabel"></div>
+        <div class="result-meta" id="resMeta"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-val" id="stOk"  style="color:var(--success)"></div>
+          <div class="stat-lbl">Benar</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="stErr" style="color:var(--danger)"></div>
+          <div class="stat-lbl">Salah / Skip</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="stPct" style="color:var(--blue)"></div>
+          <div class="stat-lbl">Skor</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn btn-outline btn-sm" onclick="window.print()">🖨 Print</button>
+      <button class="btn btn-gray btn-sm"    onclick="resetQuiz()">↩ Ulangi</button>
+    </div>
+
+    <div class="card">
+      <div class="review-title">Review Jawaban</div>
+      <div id="reviewBox"></div>
+    </div>
+
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ═══════════════════════════════════════════════════
+// QUESTION BANK — 50 soal
+// ans = index jawaban benar (sebelum opsi di-shuffle)
+// ═══════════════════════════════════════════════════
+const BANK = [
+{q:"Which statement best describes Agile as a project management approach?",opts:["A sequential process where all requirements are defined before development","An adaptive, iterative, and incremental approach focused on fast feedback","A documentation-heavy methodology suited for stable, predictable projects","A framework that eliminates the need for planning and team roles"],ans:1,exp:"Agile is adaptive, iterative & incremental — it delivers working software quickly and responds to change."},
+{q:"In Agile, short development cycles that produce testable and improvable output are called:",opts:["Phases","Milestones","Sprints","Waterfall stages"],ans:2,exp:"Sprints are short cycles (1–4 weeks) producing a working product increment."},
+{q:"Which of the following is NOT a key characteristic of Agile?",opts:["Team initiative and collaboration","Flexibility toward changes","Fixed requirements throughout the entire project","Fast feedback from users"],ans:2,exp:"Fixed requirements is a characteristic of traditional (Waterfall) management, not Agile."},
+{q:"Agile is best suited for projects that:",opts:["Have completely clear and stable requirements from the start","Require extensive upfront documentation before any coding","Have high complexity and dynamic, evolving requirements","Need a single delivery at the very end of the project"],ans:2,exp:"Agile thrives on high complexity and dynamically changing requirements, enabling continuous refinement."},
+{q:"Which Agile methodology visualizes workflow using columns like 'To Do', 'In Progress', and 'Done'?",opts:["Scrum","Extreme Programming (XP)","Kanban","PRINCE2"],ans:2,exp:"Kanban uses a board with columns to visualize work flow and identify bottlenecks."},
+{q:"According to the Agile mindset, what is more important than sophisticated tools or processes?",opts:["Comprehensive documentation","Team mindset, flexibility, and being user-centered","Following a strict timeline","Having a large development team"],ans:1,exp:"Agile is about mindset — flexibility, user-centeredness, and fast response to change."},
+{q:"In Agile, the first usable version of a product released to get user feedback quickly is called:",opts:["Beta Version","Release Candidate","Minimum Viable Product (MVP)","Prototype"],ans:2,exp:"MVP is the simplest version that delivers core value and allows fast user feedback."},
+{q:"Which of the following best represents an Agile team's relationship with the end user?",opts:["User involvement only at the beginning and end of the project","User is kept separate to avoid scope changes","Continuous collaboration and feedback throughout development","User feedback is collected only during formal acceptance testing"],ans:2,exp:"Agile requires continuous user involvement and feedback throughout every sprint."},
+{q:"How does Agile handle changes in project requirements compared to traditional (Waterfall) methods?",opts:["Agile discourages changes once development starts","Agile welcomes changes even late in development to deliver more value","Both Agile and Waterfall handle changes the same way","Agile requires a formal change request process approved by management"],ans:1,exp:"The Agile Manifesto values 'responding to change over following a plan.'"},
+{q:"Extreme Programming (XP) primarily focuses on:",opts:["Visualizing task flow on a physical board","Breaking work into time-boxed sprints with defined roles","High-quality software through practices like pair programming and test-driven development","Managing large enterprise projects across multiple teams"],ans:2,exp:"XP emphasizes technical excellence through pair programming, TDD, and continuous integration."},
+{q:"In Scrum, who is responsible for maintaining and prioritizing the Product Backlog?",opts:["Scrum Master","Development Team","Product Owner","Stakeholder"],ans:2,exp:"The Product Owner owns the Product Backlog, prioritizes by business value, and represents the user's voice."},
+{q:"What is the primary role of the Scrum Master?",opts:["Writing code and designing UI","Facilitating the Scrum process and removing impediments","Prioritizing the Product Backlog","Managing the project budget"],ans:1,exp:"The Scrum Master is the guardian of the Scrum process — facilitating discussions and removing impediments."},
+{q:"The five Scrum Values are Courage, Focus, Commitment, Respect, and:",opts:["Transparency","Openness","Inspection","Collaboration"],ans:1,exp:"The five Scrum Values are Courage, Focus, Commitment, Respect, and Openness."},
+{q:"In Scrum, 'Focus' as a value means:",opts:["The team focuses on pleasing management","Each member focuses on completing their assigned sprint work","The Scrum Master focuses on writing status reports","The Product Owner focuses only on planning future sprints"],ans:1,exp:"Focus in Scrum means everyone commits to completing sprint work — whatever is taken on must be finished."},
+{q:"In Scrum, 'Openness' as a value means:",opts:["Open source code is shared publicly","All work and challenges are visible; team members share blockers openly","The team holds open interviews with stakeholders every day","The Product Backlog is publicly visible to all external users"],ans:1,exp:"Openness means all work and obstacles are visible — members share blockers so the team can help collectively."},
+{q:"Which Scrum role selects backlog items and determines HOW to build each piece during Sprint Planning?",opts:["Product Owner","Scrum Master","Developers","Stakeholders"],ans:2,exp:"Developers select items from the backlog that support the Sprint Goal and plan how to complete each one."},
+{q:"'Velocity' in Scrum refers to:",opts:["The internet speed of the development team","The rate at which a team completes work across sprints","The number of stakeholders involved in the project","The time the Scrum Master spends facilitating meetings"],ans:1,exp:"Velocity measures how much work a team typically completes in a sprint, used to forecast future capacity."},
+{q:"In Scrum, 'Commitment' as a value means:",opts:["Signing a legal contract with stakeholders at project start","Team members genuinely commit to doing what they agree to do","The Product Owner commits to never changing the backlog","Management commits to providing unlimited budget"],ans:1,exp:"Commitment in Scrum means team members trust each other to deliver on what they agreed."},
+{q:"Which statement about the Development Team in Scrum is correct?",opts:["The team is directed by the Scrum Master on which tasks to pick","The team is self-organizing and cross-functional","The team only codes and does not participate in planning","The team reports daily to the Product Owner about their progress"],ans:1,exp:"Development Teams are self-organizing (they decide how) and cross-functional (they have all needed skills)."},
+{q:"In Scrum, 'Respect' as a value is demonstrated by:",opts:["Letting senior developers make all technical decisions","Acknowledging each member's contributions and tolerating occasional mistakes","Respecting the timeline by working overtime every sprint","Respecting the client by never raising concerns about requirements"],ans:1,exp:"Respect means valuing contributions, appreciating work, and occasionally overlooking small mistakes."},
+{q:"Which Scrum event is a daily 15-minute synchronization meeting?",opts:["Sprint Review","Sprint Planning","Sprint Retrospective","Daily Standup"],ans:3,exp:"Daily Standup is a 15-min meeting: what was done, any blockers, and what will be done next."},
+{q:"Sprint Retrospective focuses on evaluating:",opts:["The product features delivered in the sprint","The team's way of working (process improvement)","The prioritization of the Product Backlog","Stakeholder feedback on the product"],ans:1,exp:"Sprint Retrospective evaluates the team's working process and produces action items for the next sprint."},
+{q:"Which Scrum principle states that every Scrum activity has a fixed time limit?",opts:["Iterative Development","Empirical Process Control","Self-Organization","Time-boxing"],ans:3,exp:"Time-boxing assigns strict time limits to each Scrum event for effective management."},
+{q:"The three pillars of Empirical Process Control in Scrum are:",opts:["Planning, Execution, Delivery","Transparency, Inspection, Adaptation","Courage, Focus, Commitment","Sprint, Backlog, Review"],ans:1,exp:"Empirical Process Control rests on Transparency, Inspection, and Adaptation."},
+{q:"What is the correct sequence of activities at the END of each Sprint?",opts:["Sprint Planning → Daily Standup → Sprint Retrospective","Sprint Review → Sprint Retrospective → next Sprint Planning","Sprint Retrospective → Sprint Review → Daily Standup","Daily Standup → Sprint Review → Product Backlog Refinement"],ans:1,exp:"End-of-sprint order: Sprint Review → Sprint Retrospective → next Sprint Planning."},
+{q:"Product Backlog Refinement is a meeting held DURING a sprint to:",opts:["Demo the working product to stakeholders","Review the team's working process","Review, update priorities, estimate, and break down user stories","Plan tasks for the next sprint"],ans:2,exp:"Refinement reviews and updates the backlog: removing irrelevant stories, adding new ones, re-prioritizing, and estimating."},
+{q:"In a Sprint Review, which of the following is NOT a standard activity?",opts:["Demonstrating the completed product increment","Reviewing what was completed and what was not","Evaluating the team's way of working and creating improvement action plans","Updating or reprioritizing the Product Backlog based on feedback"],ans:2,exp:"Evaluating the team's way of working is Sprint Retrospective, not Sprint Review."},
+{q:"In Value-Based Prioritization, how does Scrum differ from traditional project management?",opts:["Scrum fixes requirements for the entire project","Scrum delays all value delivery to the end of the project","Scrum prioritizes by business value and allows reprioritization after every sprint","Scrum assigns equal priority to all backlog items"],ans:2,exp:"Scrum delivers value incrementally and reprioritizes after each sprint based on evolving stakeholder needs."},
+{q:"The Scrum Body of Knowledge describes Scrum as having 19 processes organized into how many phases?",opts:["3","4","5","6"],ans:2,exp:"The 19 Scrum processes are grouped into 5 phases: Initiation, Planning, Implementation, Review & Retrospect, Release."},
+{q:"Transparency in Scrum Empirical Process Control means:",opts:["Only senior team members can see the project status","All significant aspects of the process are visible to everyone responsible","The source code is open source","The Product Owner shares the backlog only with the Scrum Master"],ans:1,exp:"Transparency means all process aspects (backlog, burndown, scrumboard) are visible to all involved parties."},
+{q:"In Scrum's Collaboration principle, collaboration means:",opts:["Each team member works independently on assigned tasks","The Scrum Master assigns all tasks and monitors completion","Actively accepting others' input and integrating it to collectively improve the product","Holding daily meetings to report status to management"],ans:2,exp:"Scrum collaboration = actively accepting others' input and using it to jointly improve the product."},
+{q:"Which document in Scrum represents the prioritized list of ALL product needs?",opts:["Sprint Backlog","Sprint Goal","Product Backlog","Release Plan"],ans:2,exp:"The Product Backlog is a dynamic, prioritized list of everything needed for the product, owned by the Product Owner."},
+{q:"Which statement correctly distinguishes Sprint Backlog from Product Backlog?",opts:["Sprint Backlog contains ALL features; Product Backlog contains only current sprint tasks","Product Backlog is owned by the Dev Team; Sprint Backlog by the Product Owner","Product Backlog = all product needs (PO-owned); Sprint Backlog = subset selected for current sprint","Sprint Backlog and Product Backlog always contain identical items"],ans:2,exp:"Product Backlog = all product needs (PO-owned). Sprint Backlog = subset selected for the current sprint by Developers."},
+{q:"A Sprint Goal is best described as:",opts:["A complete list of all tasks to be done in the project","The focused objective that guides what the team commits to deliver in one sprint","A technical specification document for each user story","A report submitted to management after each sprint"],ans:1,exp:"A Sprint Goal is the single focused objective that gives the sprint purpose and guides the team's decisions."},
+{q:"When building the Product Backlog, items should be ordered based on:",opts:["Alphabetical order of feature names","The developer's personal preference","Business value, risk, and dependencies","The order they appear in the SRS document"],ans:2,exp:"Product Backlog ordering is driven by business value to users, risk level, and feature dependencies."},
+{q:"In Scrum capacity planning, the formula used is:",opts:["Number of developers × sprint days × 100%","Number of developers × sprint days × availability factor (e.g. 80%)","Total backlog items ÷ number of developers","Sprint velocity from previous sprint × team size"],ans:1,exp:"Capacity = developers × sprint days × availability factor to set a realistic sprint commitment."},
+{q:"What is 'Tech Debt' (Technical Debt) in Scrum?",opts:["The financial budget allocated to the development team","The cost of purchasing development tools and licenses","Shortcuts taken to deliver quickly that accumulate future rework","The number of incomplete user stories at the end of a sprint"],ans:2,exp:"Tech Debt is the implied cost of choosing a fast, easy solution now instead of a better approach that takes longer."},
+{q:"In Scrum's Self-Organization principle, what does self-organization mean for the Development Team?",opts:["The team sets their own salary and working hours","The team decides HOW to accomplish their work without being directed by management","Each developer works completely independently without team coordination","The team selects which project to work on without management input"],ans:1,exp:"Self-organizing teams decide how to best accomplish their sprint work — management sets the 'what', team decides 'how'."},
+{q:"In a one-week sprint with 3 developers at 80% availability, the team's capacity is:",opts:["15 person-days","12 person-days","10 person-days","8 person-days"],ans:1,exp:"3 developers × 5 days × 80% = 12 person-days of capacity for the sprint."},
+{q:"In the SRS-to-Scrum conversion flow, what is the correct order of artifacts?",opts:["Epic → SRS → User Story → Sprint Planning → Product Backlog","SRS → Epic → User Story → Product Backlog → Sprint Planning","User Story → SRS → Epic → Product Backlog → Sprint Planning","Product Backlog → SRS → Epic → User Story → Sprint Planning"],ans:1,exp:"Correct flow: SRS → Epic (group features) → User Story → Product Backlog → Sprint Planning."},
+{q:"A well-written User Story uses which standard format?",opts:["Given [condition] / When [action] / Then [result]","As a [role] / I want [feature] / So that [benefit]","Who [user] / What [system] / Why [goal]","Feature [name] / Priority [level] / Estimate [points]"],ans:1,exp:"'As a [role], I want [feature], So that [benefit]' is the standard User Story format."},
+{q:"Acceptance Criteria in Scrum serve which primary purpose?",opts:["Assigning tasks to specific developers","Defining testable conditions that mark a User Story as 'Done'","Estimating the time needed for each sprint","Documenting the stakeholder meeting minutes"],ans:1,exp:"Acceptance Criteria (Given/When/Then format) define testable conditions that mark a User Story as Done."},
+{q:"In the SISKA case study, EPIC-02 (Pengisian KRS) is mapped to which Functional Requirements?",opts:["FR-01 (Login only)","FR-05 (Kehadiran only)","FR-02, FR-03, FR-04, FR-06","FR-07, FR-08"],ans:2,exp:"EPIC-02 covers FR-02 (lihat MK), FR-03 (isi KRS), FR-04 (setujui KRS), and FR-06 (validasi SKS)."},
+{q:"In Scrum, what is the relationship between a Functional Requirement (FR) in SRS and a User Story?",opts:["One FR always maps to exactly one Epic","Each FR row in the SRS becomes a candidate for one User Story in the Product Backlog","Multiple FRs must be combined before entering the backlog","FRs are discarded once Scrum begins"],ans:1,exp:"Each FR in the SRS is a candidate for one User Story. The SRS remains the source of truth for the backlog."},
+{q:"In the SISKA case, the Product Vision Statement identifies the target users as:",opts:["Only Mahasiswa","Only Dosen and Admin","Mahasiswa, Dosen, and Staf Akademik","External stakeholders and government bodies"],ans:2,exp:"SISKA's Product Vision: 'For Mahasiswa, Dosen, dan Staf Akademik who need an integrated academic information system.'"},
+{q:"In the SISKA Sprint 1 example, which four Product Backlog items were included?",opts:["PB-07 and PB-08 (Kehadiran features)","PB-01 (Login), PB-02 (Lihat MK), PB-03 (Pilih MK), PB-04 (Validasi SKS)","PB-05 (Ajukan KRS) and PB-06 (Setujui KRS)","PB-09 (KHS) and PB-10 (Jadwal)"],ans:1,exp:"Sprint 1 covers login (PB-01), view MK (PB-02), add MK to KRS (PB-03), and SKS validation (PB-04)."},
+{q:"In Scrum, what does 'Definition of Done (DoD)' mean?",opts:["A list of tasks assigned to each developer","The shared agreement on what 'complete' means for any user story or sprint","A formal sign-off document signed by the Product Owner only","The final release checklist submitted to management at project end"],ans:1,exp:"DoD is a shared checklist defining when a user story or sprint increment is truly complete (coded, tested, reviewed, deployable)."},
+{q:"An Epic in Scrum is best described as:",opts:["A single user story with high business value","A large feature group that is too big for one sprint and is broken into User Stories","A sprint planning meeting that covers multiple teams","A release containing all product features"],ans:1,exp:"An Epic is a large body of work (related features) too big for one sprint — broken down into multiple User Stories."},
+{q:"The Acceptance Criteria format 'Given–When–Then' is used because:",opts:["It matches the format used in traditional SRS documents","It creates testable, specific, and unambiguous conditions for each user story","It is required by the Scrum Master for all documentation","It replaces the need for a Product Backlog"],ans:1,exp:"Given-When-Then makes each AC testable and specific: Given [context], When [action], Then [expected result] — no ambiguity."},
+{q:"In Scrum, the Sprint Retrospective outputs are:",opts:["A new version of the Product Backlog","A demo video of the sprint's features","A list of improvements, evaluations, and action plans for the next sprint","An updated project charter submitted to management"],ans:2,exp:"Retrospective outputs: what went well, what needs improvement, how to improve, and action items for next sprint."},
+{q:"Which information radiator in Scrum shows remaining work vs. time remaining in a sprint?",opts:["Scrumboard","Product Backlog","Burndown Chart","Release Planning Schedule"],ans:2,exp:"A Burndown Chart visualizes remaining work (y-axis) over time (x-axis), showing sprint progress at a glance."}
+];
+
+// ═══════════════════════════════════════
+// ENGINE
+// ═══════════════════════════════════════
+const QUIZ_SIZE = 30;
+const CIRC = 2 * Math.PI * 21; // r=21 → ~131.9
+
+let session = [];
+let curQ = 0, okCount = 0, errCount = 0;
+let answered = false;
+let timerID = null, timeLeft = 30;
+let playerName = '', playerNIM = '';
+let log = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function buildSession() {
+  return shuffle(BANK).slice(0, QUIZ_SIZE).map(q => {
+    const idx = [0,1,2,3];
+    const sh  = shuffle(idx);
+    return {
+      q:    q.q,
+      opts: sh.map(i => q.opts[i]),
+      ans:  sh.indexOf(q.ans),
+      exp:  q.exp
+    };
+  });
+}
+
+function startQuiz() {
+  const sel = document.getElementById('nameSelect');
+  const nim = document.getElementById('nimInput').value.trim();
+  if (!sel.value) { alert('Pilih nama terlebih dahulu.'); return; }
+  if (!nim)       { alert('Masukkan NIM terlebih dahulu.'); return; }
+  playerName = sel.value;
+  playerNIM  = nim;
+  session = buildSession();
+  curQ = 0; okCount = 0; errCount = 0; log = [];
+  document.getElementById('startScreen').style.display  = 'none';
+  document.getElementById('quizScreen').style.display   = 'block';
+  updateChips();
+  loadQ();
+}
+
+function loadQ() {
+  if (curQ >= QUIZ_SIZE) { showResult(); return; }
+  answered = false;
+  const d = session[curQ];
+
+  document.getElementById('qLabel').textContent   = 'Question ' + (curQ+1) + ' of ' + QUIZ_SIZE;
+  document.getElementById('qText').textContent    = d.q;
+  document.getElementById('progFill').style.width = ((curQ/QUIZ_SIZE)*100)+'%';
+  document.getElementById('progText').textContent = curQ + ' / ' + QUIZ_SIZE;
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('skipBtn').style.display = 'inline-flex';
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback'; fb.textContent = '';
+
+  const box = document.getElementById('optBox');
+  box.innerHTML = '';
+  ['A','B','C','D'].forEach((ltr, i) => {
+    const el = document.createElement('div');
+    el.className = 'option';
+    el.innerHTML = `<span class="opt-key">${ltr}</span><span>${d.opts[i]}</span>`;
+    el.onclick = () => pick(i, el);
+    box.appendChild(el);
+  });
+
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerID);
+  timeLeft = 30;
+  renderTimer();
+  timerID = setInterval(() => {
+    timeLeft--;
+    renderTimer();
+    if (timeLeft <= 0) { clearInterval(timerID); if (!answered) autoAdvance(); }
+  }, 1000);
+}
+
+function renderTimer() {
+  const arc = document.getElementById('timerArc');
+  const num = document.getElementById('timerNum');
+  num.textContent = timeLeft;
+  arc.style.strokeDashoffset = CIRC * (1 - timeLeft/30);
+  arc.style.stroke = timeLeft <= 10 ? 'var(--danger)' : timeLeft <= 20 ? 'var(--warn)' : 'var(--blue)';
+}
+
+function pick(idx, el) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerID);
+  const d    = session[curQ];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(o => o.classList.add('opt-disabled'));
+  const ok = idx === d.ans;
+  if (ok) { el.classList.add('opt-correct'); okCount++; }
+  else    { el.classList.add('opt-wrong'); opts[d.ans].classList.add('opt-correct'); errCount++; }
+  log.push({ qi: curQ, sel: idx, ans: d.ans, status: ok ? 'correct' : 'wrong' });
+  updateChips();
+  showFB(ok ? 'correct' : 'wrong', d.exp);
+  document.getElementById('skipBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'inline-flex';
+}
+
+function autoAdvance() {
+  answered = true;
+  const d    = session[curQ];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(o => o.classList.add('opt-disabled'));
+  opts[d.ans].classList.add('opt-correct');
+  errCount++;
+  log.push({ qi: curQ, sel: -1, ans: d.ans, status: 'timeout' });
+  updateChips();
+  showFB('timeout', 'Waktu habis! Jawaban benar: ' + d.opts[d.ans]);
+  document.getElementById('skipBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'inline-flex';
+  // auto move after brief pause so student sees the correct answer
+  setTimeout(() => { if (curQ < QUIZ_SIZE - 1) nextQ(); else showResult(); }, 1800);
+}
+
+function skipQ() {
+  if (answered) return;
+  clearInterval(timerID);
+  answered = true;
+  const d    = session[curQ];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(o => o.classList.add('opt-disabled'));
+  opts[d.ans].classList.add('opt-correct');
+  errCount++;
+  log.push({ qi: curQ, sel: -1, ans: d.ans, status: 'timeout' });
+  updateChips();
+  showFB('timeout', 'Dilewati. Jawaban benar: ' + d.opts[d.ans]);
+  document.getElementById('skipBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'inline-flex';
+}
+
+function nextQ() { curQ++; loadQ(); }
+
+function showFB(type, msg) {
+  const fb = document.getElementById('feedbackBox');
+  const ic = type==='correct' ? '✅' : type==='wrong' ? '❌' : '⏰';
+  fb.className = 'feedback show fb-' + type;
+  fb.textContent = ic + ' ' + msg;
+}
+
+function updateChips() {
+  document.getElementById('chipOk').textContent  = '✓ ' + okCount;
+  document.getElementById('chipErr').textContent = '✗ ' + errCount;
+}
+
+function showResult() {
+  clearInterval(timerID);
+  document.getElementById('quizScreen').style.display  = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  const pct = Math.round((okCount/QUIZ_SIZE)*100);
+  document.getElementById('stOk').textContent  = okCount;
+  document.getElementById('stErr').textContent = errCount;
+  document.getElementById('stPct').textContent = pct + '%';
+  document.getElementById('resMeta').textContent = playerName + '  ·  NIM ' + playerNIM + '  ·  Kelas Rabu';
+
+  let grade, label, color;
+  if      (pct >= 85) { grade='A'; label='Sangat Baik 🏆';      color='var(--success)'; }
+  else if (pct >= 75) { grade='B'; label='Baik 👍';              color='var(--blue)'; }
+  else if (pct >= 65) { grade='C'; label='Cukup 📚';             color='var(--warn)'; }
+  else if (pct >= 55) { grade='D'; label='Perlu Latihan 💪';     color='#f97316'; }
+  else                { grade='E'; label='Pelajari Ulang Materi'; color='var(--danger)'; }
+
+  const ge = document.getElementById('resGrade');
+  ge.textContent = grade;
+  ge.style.color = color;
+  ge.classList.add('pop');
+  document.getElementById('resPct').textContent   = pct + '%';
+  document.getElementById('resLabel').textContent = label;
+
+  // Review
+  const box = document.getElementById('reviewBox');
+  box.innerHTML = '';
+  const ltrs = ['A','B','C','D'];
+  log.forEach((r, i) => {
+    const d   = session[r.qi];
+    const div = document.createElement('div');
+    div.className = 'rev-item r-' + r.status;
+    let ah = `<div class="rev-ans"><div class="rev-dot dot-ok"></div><span><strong>Benar:</strong> (${ltrs[r.ans]}) ${d.opts[r.ans]}</span></div>`;
+    if (r.status !== 'correct' && r.sel >= 0)
+      ah += `<div class="rev-ans"><div class="rev-dot dot-err"></div><span><strong>Jawaban kamu:</strong> (${ltrs[r.sel]}) ${d.opts[r.sel]}</span></div>`;
+    else if (r.status === 'timeout')
+      ah += `<div class="rev-ans"><div class="rev-dot dot-wrn"></div><span><strong>Tidak dijawab / Waktu habis</strong></span></div>`;
+    div.innerHTML = `
+      <div class="rev-num">No. ${i+1} · ${r.status==='correct'?'BENAR':r.status==='wrong'?'SALAH':'TIMEOUT'}</div>
+      <div class="rev-q">${d.q}</div>
+      <div class="rev-ans-wrap">${ah}</div>
+      <div class="rev-exp">💡 ${d.exp}</div>`;
+    box.appendChild(div);
+  });
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetQuiz() {
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('startScreen').style.display  = 'block';
+  document.getElementById('nameSelect').value = '';
+  document.getElementById('nimInput').value   = '';
+}
+</script>
+</body>
+</html>
