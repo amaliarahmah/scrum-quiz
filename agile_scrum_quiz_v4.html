@@ -1133,10 +1133,10 @@ function showResult() {
 }
 
 // ── Placeholder — URL diisi setelah Apps Script di-deploy ──
-const SCRIPT_URL = 'GANTI_DENGAN_URL_APPS_SCRIPT';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbylIASHPqexRJCKTPGJyVj4XB2WlNbX9-F_aB9HnkkR9Xb5QNloFltafwGp9XqjwiE/exec';
 
 function kirimData(pct) {
-  if (SCRIPT_URL === 'GANTI_DENGAN_URL_APPS_SCRIPT') return;
+  if (SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbylIASHPqexRJCKTPGJyVj4XB2WlNbX9-F_aB9HnkkR9Xb5QNloFltafwGp9XqjwiE/exec') return;
   document.getElementById('sendingNote').textContent = '⏳ Menyimpan hasil...';
   const payload = {
     nama:     playerName,
