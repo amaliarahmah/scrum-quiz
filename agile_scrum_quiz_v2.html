@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agile & Scrum Quiz — Manajemen Proyek STT-NF</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161a23;
+    --surface2: #1e2433;
+    --border: #2a3147;
+    --accent: #4f8ef7;
+    --accent2: #f7934f;
+    --success: #3ecf8e;
+    --danger: #f7506e;
+    --warning: #f7c94f;
+    --text: #e8eaf0;
+    --muted: #7a8199;
+    --card: #1a1f2e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,142,247,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,142,247,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .container { max-width: 820px; margin: 0 auto; padding: 32px 20px 60px; position: relative; z-index: 1; }
+
+  /* HEADER */
+  .header { text-align: center; margin-bottom: 40px; }
+  .badge {
+    display: inline-block;
+    background: rgba(79,142,247,0.12);
+    border: 1px solid rgba(79,142,247,0.3);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #e8eaf0 0%, #4f8ef7 60%, #f7934f 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+  .subtitle { color: var(--muted); font-size: 14px; letter-spacing: 0.5px; }
+
+  /* START SCREEN */
+  #startScreen {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  #startScreen::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(79,142,247,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  .info-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .info-icon { font-size: 22px; flex-shrink: 0; }
+  .info-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+  .info-value { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: var(--accent); }
+  label.field-label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.5px; }
+  input[type="text"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 24px;
+  }
+  input[type="text"]:focus { border-color: var(--accent); }
+  input[type="text"]::placeholder { color: var(--muted); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--accent); color: #fff; width: 100%; justify-content: center; }
+  .btn-primary:hover { background: #3a7de8; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(79,142,247,0.3); }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); }
+  .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .btn-outline:hover { background: rgba(79,142,247,0.1); }
+
+  /* QUIZ SCREEN */
+  #quizScreen { display: none; }
+  .quiz-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .q-counter { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); }
+  .q-counter span { color: var(--text); font-weight: 500; }
+  .timer-wrap { display: flex; align-items: center; gap: 10px; }
+  .timer-ring { position: relative; width: 52px; height: 52px; }
+  .timer-ring svg { transform: rotate(-90deg); }
+  .timer-ring circle { fill: none; stroke-width: 3; stroke-linecap: round; }
+  .timer-bg { stroke: var(--border); }
+  .timer-fg { stroke: var(--accent); stroke-dasharray: 138; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear, stroke 0.3s; }
+  .timer-num {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 500; color: var(--text);
+  }
+  .progress-track { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 24px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #a78bfa); border-radius: 2px; transition: width 0.4s ease; }
+
+  .q-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 32px 28px; margin-bottom: 20px; }
+  .q-number { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+  .q-text { font-size: 17px; font-weight: 500; line-height: 1.6; color: var(--text); }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 18px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-size: 14.5px;
+    line-height: 1.5;
+  }
+  .option:hover:not(.disabled) { border-color: var(--accent); background: rgba(79,142,247,0.07); transform: translateX(3px); }
+  .option.selected { border-color: var(--accent); background: rgba(79,142,247,0.12); }
+  .option.correct { border-color: var(--success); background: rgba(62,207,142,0.1); }
+  .option.wrong { border-color: var(--danger); background: rgba(247,80,110,0.1); }
+  .option.disabled { cursor: default; }
+  .opt-letter {
+    font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500;
+    background: var(--border); color: var(--muted);
+    border-radius: 6px; width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.18s;
+  }
+  .option.selected .opt-letter { background: var(--accent); color: #fff; }
+  .option.correct .opt-letter { background: var(--success); color: #0d1a0d; }
+  .option.wrong .opt-letter { background: var(--danger); color: #fff; }
+
+  .feedback-box { margin-top: 16px; padding: 14px 18px; border-radius: 12px; font-size: 14px; line-height: 1.5; display: none; }
+  .feedback-box.show { display: block; animation: fadeUp 0.3s ease; }
+  .feedback-correct { background: rgba(62,207,142,0.1); border: 1px solid rgba(62,207,142,0.3); color: var(--success); }
+  .feedback-wrong { background: rgba(247,80,110,0.08); border: 1px solid rgba(247,80,110,0.3); color: #f7879a; }
+  .feedback-timeout { background: rgba(247,201,79,0.08); border: 1px solid rgba(247,201,79,0.3); color: var(--warning); }
+
+  .q-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+  .score-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { font-family: 'DM Mono', monospace; font-size: 12px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); color: var(--muted); }
+  .chip.correct-chip { color: var(--success); border-color: rgba(62,207,142,0.3); }
+  .chip.wrong-chip { color: var(--danger); border-color: rgba(247,80,110,0.3); }
+
+  /* RESULT SCREEN */
+  #resultScreen { display: none; }
+  .result-hero {
+    text-align: center; padding: 40px 20px 32px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; margin-bottom: 24px;
+    position: relative; overflow: hidden;
+  }
+  .result-hero::after {
+    content: ''; position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%);
+    width: 300px; height: 200px;
+    background: radial-gradient(ellipse, rgba(79,142,247,0.12) 0%, transparent 70%);
+  }
+  .result-grade { font-family: 'Syne', sans-serif; font-size: 80px; font-weight: 800; line-height: 1; margin-bottom: 8px; }
+  .result-name { font-size: 18px; color: var(--muted); margin-bottom: 4px; }
+  .result-name span { color: var(--text); font-weight: 500; }
+  .result-label { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 20px; }
+  .seed-note { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  .stat-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 18px 12px; text-align: center; }
+  .stat-val { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+  .stat-lbl { font-size: 12px; color: var(--muted); }
+
+  .result-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 32px; }
+
+  .review-section h3 {
+    font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700;
+    margin-bottom: 16px; color: var(--muted);
+    border-bottom: 1px solid var(--border); padding-bottom: 10px;
+  }
+  .review-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 12px; }
+  .review-item.r-correct { border-color: rgba(62,207,142,0.25); }
+  .review-item.r-wrong { border-color: rgba(247,80,110,0.25); }
+  .review-item.r-timeout { border-color: rgba(247,201,79,0.2); }
+  .review-qnum { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .review-qtext { font-size: 14px; line-height: 1.5; margin-bottom: 10px; }
+  .review-answers { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+  .rev-ans { display: flex; align-items: flex-start; gap: 8px; }
+  .rev-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .dot-correct { background: var(--success); }
+  .dot-wrong { background: var(--danger); }
+  .dot-timeout { background: var(--warning); }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes popIn { 0%{transform:scale(0.85);opacity:0;} 70%{transform:scale(1.04);} 100%{transform:scale(1);opacity:1;} }
+  .pop { animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+  @media print {
+    body { background: white; color: black; }
+    body::before { display: none; }
+    .btn, .quiz-topbar, .progress-track { display: none !important; }
+    .result-hero, .stat-card, .review-item { background: white !important; border: 1px solid #ccc !important; color: black !important; break-inside: avoid; }
+    * { color: black !important; }
+  }
+  @media (max-width:540px) {
+    .info-grid { grid-template-columns: 1fr; }
+    .result-stats { grid-template-columns: 1fr; }
+    #startScreen { padding: 28px 20px; }
+    .q-card { padding: 24px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="badge">STT Terpadu Nurul Fikri · Manajemen Proyek</div>
+    <h1>Agile & Scrum Quiz</h1>
+    <p class="subtitle">50 question bank · 30 random questions per session · 30 sec each</p>
+  </div>
+
+  <!-- START SCREEN -->
+  <div id="startScreen">
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-icon">🎲</div>
+        <div>
+          <div class="info-label">Question Bank</div>
+          <div class="info-value">50 Soal</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">📋</div>
+        <div>
+          <div class="info-label">Per Session</div>
+          <div class="info-value">30 Random</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">⏱</div>
+        <div>
+          <div class="info-label">Timer / Question</div>
+          <div class="info-value">30 sec</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">🔀</div>
+        <div>
+          <div class="info-label">Shuffle</div>
+          <div class="info-value" style="font-size:13px;line-height:1.3">Soal & Urutan Opsi</div>
+        </div>
+      </div>
+    </div>
+    <label class="field-label">Your Full Name</label>
+    <input type="text" id="nameInput" placeholder="e.g. Budi Santoso" />
+    <button class="btn btn-primary" onclick="startQuiz()">Start Quiz →</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quizScreen">
+    <div class="quiz-topbar">
+      <div>
+        <div class="q-counter">Question <span id="qNum">1</span> of <span>30</span></div>
+        <div class="score-chips" style="margin-top:6px">
+          <div class="chip correct-chip" id="correctCount">✓ 0</div>
+          <div class="chip wrong-chip" id="wrongCount">✗ 0</div>
+        </div>
+      </div>
+      <div class="timer-wrap">
+        <div class="timer-ring">
+          <svg width="52" height="52" viewBox="0 0 52 52">
+            <circle class="timer-bg" cx="26" cy="26" r="22"/>
+            <circle class="timer-fg" id="timerRing" cx="26" cy="26" r="22"/>
+          </svg>
+          <div class="timer-num" id="timerNum">30</div>
+        </div>
+      </div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressBar" style="width:0%"></div>
+    </div>
+    <div class="q-card">
+      <div class="q-number" id="qLabel">QUESTION 01</div>
+      <div class="q-text" id="qText"></div>
+    </div>
+    <div class="options" id="optionsContainer"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+    <div class="q-actions">
+      <button class="btn btn-secondary" onclick="skipQuestion()" id="skipBtn">Skip</button>
+      <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn" style="display:none">Next →</button>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="resultScreen">
+    <div class="result-hero">
+      <div class="result-name">Result for <span id="resName"></span></div>
+      <div class="result-grade" id="resGrade"></div>
+      <div class="result-label" id="resLabel"></div>
+      <div class="seed-note" id="seedNote"></div>
+    </div>
+    <div class="result-stats">
+      <div class="stat-card">
+        <div class="stat-val" id="statCorrect" style="color:var(--success)"></div>
+        <div class="stat-lbl">Correct</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statWrong" style="color:var(--danger)"></div>
+        <div class="stat-lbl">Wrong / Skipped</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statScore" style="color:var(--accent)"></div>
+        <div class="stat-lbl">Final Score</div>
+      </div>
+    </div>
+    <div class="result-actions">
+      <button class="btn btn-outline" onclick="window.print()">🖨 Print Result</button>
+      <button class="btn btn-secondary" onclick="resetQuiz()">↩ Retake Quiz</button>
+    </div>
+    <div class="review-section">
+      <h3>Answer Review</h3>
+      <div id="reviewContainer"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// QUESTION BANK — 50 soal (bahasa Inggris)
+// Topik: Agile, Scrum, SRS→Backlog, SISKA case
+// ans = index jawaban benar (0-based, SEBELUM shuffle opsi)
+// ════════════════════════════════════════════════
+const BANK = [
+
+// ── AGILE FOUNDATIONS (1-10) ──
+{
+  q: "Which statement best describes Agile as a project management approach?",
+  opts: [
+    "A sequential process where all requirements are defined before development",
+    "An adaptive, iterative, and incremental approach focused on fast feedback",
+    "A documentation-heavy methodology suited for stable, predictable projects",
+    "A framework that eliminates the need for planning and team roles"
+  ],
+  ans: 1,
+  exp: "Agile is adaptive, iterative & incremental — it delivers working software quickly and responds to change."
+},
+{
+  q: "In Agile, short development cycles that produce testable and improvable output are called:",
+  opts: ["Phases", "Milestones", "Sprints", "Waterfall stages"],
+  ans: 2,
+  exp: "Sprints are short cycles (usually 1–4 weeks) producing a working product increment."
+},
+{
+  q: "Which of the following is NOT a key characteristic of Agile?",
+  opts: [
+    "Team initiative and collaboration",
+    "Flexibility toward changes",
+    "Fixed requirements throughout the entire project",
+    "Fast feedback from users"
+  ],
+  ans: 2,
+  exp: "Fixed requirements is a characteristic of traditional (Waterfall) management, not Agile."
+},
+{
+  q: "Agile is best suited for projects that:",
+  opts: [
+    "Have completely clear and stable requirements from the start",
+    "Require extensive upfront documentation before any coding",
+    "Have high complexity and dynamic, evolving requirements",
+    "Need a single delivery at the very end of the project"
+  ],
+  ans: 2,
+  exp: "Agile thrives on high complexity and dynamically changing requirements, enabling continuous refinement."
+},
+{
+  q: "Which Agile methodology visualizes workflow using columns like 'To Do', 'In Progress', and 'Done'?",
+  opts: ["Scrum", "Extreme Programming (XP)", "Kanban", "PRINCE2"],
+  ans: 2,
+  exp: "Kanban uses a board with columns to visualize the flow of work and identify bottlenecks."
+},
+{
+  q: "According to the Agile mindset, what is more important than sophisticated tools or processes?",
+  opts: [
+    "Comprehensive documentation",
+    "Team mindset, flexibility, and being user-centered",
+    "Following a strict timeline",
+    "Having a large development team"
+  ],
+  ans: 1,
+  exp: "Agile is about mindset — flexibility, user-centeredness, and fast response to change."
+},
+{
+  q: "In Agile, the first usable version of a product released to get user feedback quickly is called:",
+  opts: ["Beta Version", "Release Candidate", "Minimum Viable Product (MVP)", "Prototype"],
+  ans: 2,
+  exp: "MVP (Minimum Viable Product) is the simplest version that delivers core value and allows fast user feedback."
+},
+{
+  q: "Which of the following best represents an Agile team's relationship with the end user?",
+  opts: [
+    "User involvement only at the beginning and end of the project",
+    "User is kept separate to avoid scope changes",
+    "Continuous collaboration and feedback throughout development",
+    "User feedback is collected only during formal acceptance testing"
+  ],
+  ans: 2,
+  exp: "Agile requires continuous user involvement and feedback throughout every sprint."
+},
+{
+  q: "How does Agile handle changes in project requirements compared to traditional (Waterfall) methods?",
+  opts: [
+    "Agile discourages changes once development starts",
+    "Agile welcomes changes even late in development to deliver more value",
+    "Both Agile and Waterfall handle changes the same way",
+    "Agile requires a formal change request process approved by management"
+  ],
+  ans: 1,
+  exp: "The Agile Manifesto values 'responding to change over following a plan.'"
+},
+{
+  q: "Extreme Programming (XP) is an Agile methodology that primarily focuses on:",
+  opts: [
+    "Visualizing task flow on a physical board",
+    "Breaking work into time-boxed sprints with defined roles",
+    "High-quality software through practices like pair programming and test-driven development",
+    "Managing large enterprise projects across multiple teams"
+  ],
+  ans: 2,
+  exp: "XP emphasizes technical excellence through practices such as pair programming, TDD, and continuous integration."
+},
+
+// ── SCRUM ROLES & VALUES (11-20) ──
+{
+  q: "In Scrum, who is responsible for maintaining and prioritizing the Product Backlog?",
+  opts: ["Scrum Master", "Development Team", "Product Owner", "Stakeholder"],
+  ans: 2,
+  exp: "The Product Owner owns the Product Backlog, prioritizes by business value, and represents the user's voice."
+},
+{
+  q: "What is the primary role of the Scrum Master?",
+  opts: [
+    "Writing code and designing UI",
+    "Facilitating the Scrum process and removing impediments",
+    "Prioritizing the Product Backlog",
+    "Managing the project budget"
+  ],
+  ans: 1,
+  exp: "The Scrum Master is the guardian of the Scrum process — facilitating discussions and removing impediments."
+},
+{
+  q: "The five Scrum Values are Courage, Focus, Commitment, Respect, and:",
+  opts: ["Transparency", "Openness", "Inspection", "Collaboration"],
+  ans: 1,
+  exp: "The five Scrum Values are Courage, Focus, Commitment, Respect, and Openness."
+},
+{
+  q: "In Scrum, 'Focus' as a value means:",
+  opts: [
+    "The team focuses on pleasing management",
+    "Each member focuses on completing their assigned sprint work",
+    "The Scrum Master focuses on writing status reports",
+    "The Product Owner focuses only on planning future sprints"
+  ],
+  ans: 1,
+  exp: "Focus in Scrum means everyone commits to completing sprint work — whatever is taken on must be finished."
+},
+{
+  q: "In Scrum, 'Openness' as a value means:",
+  opts: [
+    "Open source code is shared publicly",
+    "All work and challenges are visible; team members share blockers openly",
+    "The team holds open interviews with stakeholders every day",
+    "The Product Backlog is publicly visible to all external users"
+  ],
+  ans: 1,
+  exp: "Openness means all work and obstacles are visible — members share blockers so the team can help collectively."
+},
+{
+  q: "Which Scrum role selects backlog items and determines HOW to build each piece during Sprint Planning?",
+  opts: ["Product Owner", "Scrum Master", "Developers", "Stakeholders"],
+  ans: 2,
+  exp: "Developers select items from the backlog that support the Sprint Goal and plan how to complete each one."
+},
+{
+  q: "'Velocity' in Scrum refers to:",
+  opts: [
+    "The internet speed of the development team",
+    "The rate at which a team completes work across sprints",
+    "The number of stakeholders involved in the project",
+    "The time the Scrum Master spends facilitating meetings"
+  ],
+  ans: 1,
+  exp: "Velocity measures how much work a team typically completes in a sprint, used to forecast future capacity."
+},
+{
+  q: "In Scrum, 'Commitment' as a value means:",
+  opts: [
+    "Signing a legal contract with stakeholders at project start",
+    "Team members genuinely commit to doing what they agree to do",
+    "The Product Owner commits to never changing the backlog",
+    "Management commits to providing unlimited budget"
+  ],
+  ans: 1,
+  exp: "Commitment in Scrum means team members trust each other to deliver on what they agreed — no half-measures."
+},
+{
+  q: "Which statement about the Development Team in Scrum is correct?",
+  opts: [
+    "The team is directed by the Scrum Master on which tasks to pick",
+    "The team is self-organizing and cross-functional",
+    "The team only codes and does not participate in planning",
+    "The team reports daily to the Product Owner about their progress"
+  ],
+  ans: 1,
+  exp: "Development Teams are self-organizing (they decide how to do the work) and cross-functional (they have all needed skills)."
+},
+{
+  q: "In Scrum, 'Respect' as a value is demonstrated by:",
+  opts: [
+    "Letting senior developers make all technical decisions",
+    "Acknowledging each member's contributions and tolerating occasional mistakes",
+    "Respecting the timeline by working overtime every sprint",
+    "Respecting the client by never raising concerns about requirements"
+  ],
+  ans: 1,
+  exp: "Respect means valuing each person's contributions, appreciating their work, and occasionally overlooking small mistakes."
+},
+
+// ── SCRUM PRINCIPLES & EVENTS (21-32) ──
+{
+  q: "Which Scrum event is a daily 15-minute synchronization meeting?",
+  opts: ["Sprint Review", "Sprint Planning", "Sprint Retrospective", "Daily Standup"],
+  ans: 3,
+  exp: "Daily Standup (Daily Scrum) is a 15-min meeting covering: what was done, any blockers, and what will be done next."
+},
+{
+  q: "Sprint Retrospective focuses on evaluating:",
+  opts: [
+    "The product features delivered in the sprint",
+    "The team's way of working (process improvement)",
+    "The prioritization of the Product Backlog",
+    "Stakeholder feedback on the product"
+  ],
+  ans: 1,
+  exp: "Sprint Retrospective evaluates the team's working process and produces action items to improve the next sprint."
+},
+{
+  q: "Which Scrum principle states that every Scrum activity has a fixed time limit?",
+  opts: ["Iterative Development", "Empirical Process Control", "Self-Organization", "Time-boxing"],
+  ans: 3,
+  exp: "Time-boxing assigns strict time limits to each Scrum event (Daily Standup = 15 min, etc.) for effective management."
+},
+{
+  q: "The three pillars of Empirical Process Control in Scrum are:",
+  opts: [
+    "Planning, Execution, Delivery",
+    "Transparency, Inspection, Adaptation",
+    "Courage, Focus, Commitment",
+    "Sprint, Backlog, Review"
+  ],
+  ans: 1,
+  exp: "Empirical Process Control rests on Transparency (visibility), Inspection (review), and Adaptation (adjust)."
+},
+{
+  q: "What is the correct sequence of activities at the END of each Sprint?",
+  opts: [
+    "Sprint Planning → Daily Standup → Sprint Retrospective",
+    "Sprint Review → Sprint Retrospective → next Sprint Planning",
+    "Sprint Retrospective → Sprint Review → Daily Standup",
+    "Daily Standup → Sprint Review → Product Backlog Refinement"
+  ],
+  ans: 1,
+  exp: "End-of-sprint order: Sprint Review (show product) → Sprint Retrospective (evaluate process) → next Sprint Planning."
+},
+{
+  q: "Product Backlog Refinement is a meeting held DURING a sprint to:",
+  opts: [
+    "Demo the working product to stakeholders",
+    "Review the team's working process",
+    "Review, update priorities, estimate, and break down user stories",
+    "Plan tasks for the next sprint"
+  ],
+  ans: 2,
+  exp: "Refinement reviews and updates the backlog: removing irrelevant stories, adding new ones, re-prioritizing, and estimating."
+},
+{
+  q: "In a Sprint Review, which of the following is NOT a standard activity?",
+  opts: [
+    "Demonstrating the completed product increment",
+    "Reviewing what was completed and what was not",
+    "Evaluating the team's way of working and creating improvement action plans",
+    "Updating or reprioritizing the Product Backlog based on feedback"
+  ],
+  ans: 2,
+  exp: "Evaluating the team's way of working is the Sprint Retrospective, not the Sprint Review."
+},
+{
+  q: "In Value-Based Prioritization, how does Scrum differ from traditional project management?",
+  opts: [
+    "Scrum fixes requirements for the entire project",
+    "Scrum delays all value delivery to the end of the project",
+    "Scrum prioritizes by business value and allows reprioritization after every sprint",
+    "Scrum assigns equal priority to all backlog items"
+  ],
+  ans: 2,
+  exp: "Scrum delivers value incrementally and reprioritizes after each sprint based on evolving stakeholder needs."
+},
+{
+  q: "In Scrum, the Sprint Retrospective outputs are:",
+  opts: [
+    "A new version of the Product Backlog",
+    "A demo video of the sprint's features",
+    "A list of improvements, evaluations, and action plans for the next sprint",
+    "An updated project charter submitted to management"
+  ],
+  ans: 2,
+  exp: "Retrospective outputs: what went well, what needs improvement, how to improve it, and action items for next sprint."
+},
+{
+  q: "The Scrum Body of Knowledge describes Scrum as having 19 processes organized into how many phases?",
+  opts: ["3", "4", "5", "6"],
+  ans: 2,
+  exp: "The 19 Scrum processes are grouped into 5 phases: Initiation, Planning, Implementation, Review & Retrospect, Release."
+},
+{
+  q: "Transparency in Scrum Empirical Process Control means:",
+  opts: [
+    "Only senior team members can see the project status",
+    "All significant aspects of the process are visible to everyone responsible",
+    "The source code is open source",
+    "The Product Owner shares the backlog only with the Scrum Master"
+  ],
+  ans: 1,
+  exp: "Transparency means all process aspects (backlog, burndown, scrumboard) are visible to all involved parties."
+},
+{
+  q: "In Scrum's Collaboration principle, collaboration means:",
+  opts: [
+    "Each team member works independently on assigned tasks",
+    "The Scrum Master assigns all tasks and monitors completion",
+    "Actively accepting others' input and integrating it to collectively improve the product",
+    "Holding daily meetings to report status to management"
+  ],
+  ans: 2,
+  exp: "Scrum collaboration = actively accepting others' input and using it to jointly improve the product or project."
+},
+
+// ── BACKLOG & SPRINT PLANNING (33-40) ──
+{
+  q: "Which document in Scrum represents the prioritized list of ALL product needs?",
+  opts: ["Sprint Backlog", "Sprint Goal", "Product Backlog", "Release Plan"],
+  ans: 2,
+  exp: "The Product Backlog is a dynamic, prioritized list of everything needed for the product, owned by the Product Owner."
+},
+{
+  q: "Which statement correctly distinguishes Sprint Backlog from Product Backlog?",
+  opts: [
+    "Sprint Backlog contains ALL features; Product Backlog contains only current sprint tasks",
+    "Product Backlog is owned by the Dev Team; Sprint Backlog by the Product Owner",
+    "Product Backlog = all product needs (PO-owned); Sprint Backlog = subset selected for current sprint",
+    "Sprint Backlog and Product Backlog always contain identical items"
+  ],
+  ans: 2,
+  exp: "Product Backlog = all product needs (owned by PO). Sprint Backlog = subset selected for the current sprint by Developers."
+},
+{
+  q: "A Sprint Goal is best described as:",
+  opts: [
+    "A complete list of all tasks to be done in the project",
+    "The focused objective that guides what the team commits to deliver in one sprint",
+    "A technical specification document for each user story",
+    "A report submitted to management after each sprint"
+  ],
+  ans: 1,
+  exp: "A Sprint Goal is the single focused objective that gives the sprint purpose and guides the team's decisions."
+},
+{
+  q: "When building the Product Backlog, items should be ordered based on:",
+  opts: [
+    "Alphabetical order of feature names",
+    "The developer's personal preference",
+    "Business value, risk, and dependencies",
+    "The order they appear in the SRS document"
+  ],
+  ans: 2,
+  exp: "Product Backlog ordering is driven by business value to users, risk level, and feature dependencies."
+},
+{
+  q: "In Scrum capacity planning for Sprint 1, the formula used is:",
+  opts: [
+    "Number of developers × sprint days × 100%",
+    "Number of developers × sprint days × availability factor (e.g. 80%)",
+    "Total backlog items ÷ number of developers",
+    "Sprint velocity from previous sprint × team size"
+  ],
+  ans: 1,
+  exp: "Capacity = developers × sprint days × availability factor (e.g. 80%) to set a realistic sprint commitment."
+},
+{
+  q: "What is 'Tech Debt' (Technical Debt) in Scrum?",
+  opts: [
+    "The financial budget allocated to the development team",
+    "The cost of purchasing development tools and licenses",
+    "Shortcuts taken to deliver quickly that accumulate future rework",
+    "The number of incomplete user stories at the end of a sprint"
+  ],
+  ans: 2,
+  exp: "Tech Debt is the implied cost of choosing a fast, easy solution now instead of a better approach that takes longer."
+},
+{
+  q: "In Scrum's Self-Organization principle, what does self-organization mean for the Development Team?",
+  opts: [
+    "The team sets their own salary and working hours",
+    "The team decides HOW to accomplish their work without being directed by management",
+    "Each developer works completely independently without team coordination",
+    "The team selects which project to work on without management input"
+  ],
+  ans: 1,
+  exp: "Self-organizing teams decide how to best accomplish their sprint work — management sets the 'what', team decides 'how'."
+},
+{
+  q: "In a one-week sprint with 3 developers at 80% availability, the team's capacity is:",
+  opts: ["15 person-days", "12 person-days", "10 person-days", "8 person-days"],
+  ans: 1,
+  exp: "3 developers × 5 days × 80% = 12 person-days of capacity for the sprint."
+},
+
+// ── SRS TO SCRUM CONVERSION (41-47) ──
+{
+  q: "In the SRS-to-Scrum conversion flow, what is the correct order of artifacts?",
+  opts: [
+    "Epic → SRS → User Story → Sprint Planning → Product Backlog",
+    "SRS → Epic → User Story → Product Backlog → Sprint Planning",
+    "User Story → SRS → Epic → Product Backlog → Sprint Planning",
+    "Product Backlog → SRS → Epic → User Story → Sprint Planning"
+  ],
+  ans: 1,
+  exp: "Correct flow: SRS → Epic (group features) → User Story → Product Backlog → Sprint Planning."
+},
+{
+  q: "A well-written User Story uses which standard format?",
+  opts: [
+    "Given [condition] / When [action] / Then [result]",
+    "As a [role] / I want [feature] / So that [benefit]",
+    "Who [user] / What [system] / Why [goal]",
+    "Feature [name] / Priority [level] / Estimate [points]"
+  ],
+  ans: 1,
+  exp: "'As a [role], I want [feature], So that [benefit]' is the standard User Story format."
+},
+{
+  q: "Acceptance Criteria in Scrum serve which primary purpose?",
+  opts: [
+    "Assigning tasks to specific developers",
+    "Defining testable conditions that mark a User Story as 'Done'",
+    "Estimating the time needed for each sprint",
+    "Documenting the stakeholder meeting minutes"
+  ],
+  ans: 1,
+  exp: "Acceptance Criteria (often in Given/When/Then format) define testable conditions that mark a User Story as Done."
+},
+{
+  q: "In the SISKA case study, EPIC-02 (Pengisian KRS) is mapped to which Functional Requirements?",
+  opts: [
+    "FR-01 (Login only)",
+    "FR-05 (Kehadiran only)",
+    "FR-02, FR-03, FR-04, FR-06",
+    "FR-07, FR-08"
+  ],
+  ans: 2,
+  exp: "EPIC-02 covers FR-02 (lihat MK), FR-03 (isi KRS), FR-04 (setujui KRS), and FR-06 (validasi SKS)."
+},
+{
+  q: "In Scrum, what is the relationship between a Functional Requirement (FR) in SRS and a User Story?",
+  opts: [
+    "One FR always maps to exactly one Epic",
+    "Each FR row in the SRS becomes a candidate for one User Story in the Product Backlog",
+    "Multiple FRs must be combined before entering the backlog",
+    "FRs are discarded once Scrum begins"
+  ],
+  ans: 1,
+  exp: "Each FR in the SRS is a candidate for one User Story. The SRS remains the source of truth for the backlog."
+},
+{
+  q: "In the SISKA case, the Product Vision states: 'SISKA is a web-based academic information platform for Mahasiswa, Dosen, and Staf Akademik.' Which Scrum initiation artifact does this represent?",
+  opts: ["Sprint Goal", "Product Vision Statement", "User Story", "Sprint Backlog"],
+  ans: 1,
+  exp: "A Product Vision Statement summarizes who the product is for, what it is, and its key benefit — used at Scrum initiation."
+},
+{
+  q: "In the SISKA Sprint 1 example, which four Product Backlog items were included to achieve the Sprint Goal?",
+  opts: [
+    "PB-07 and PB-08 (Kehadiran features)",
+    "PB-01 (Login), PB-02 (Lihat MK), PB-03 (Pilih MK), PB-04 (Validasi SKS)",
+    "PB-05 (Ajukan KRS) and PB-06 (Setujui KRS)",
+    "PB-09 (KHS) and PB-10 (Jadwal)"
+  ],
+  ans: 1,
+  exp: "Sprint 1 goal 'Mahasiswa dapat login dan mengisi KRS' requires PB-01 (login), PB-02 (view MK), PB-03 (add MK), PB-04 (SKS validation)."
+},
+
+// ── ADVANCED & APPLIED (48-50) ──
+{
+  q: "In Scrum, what does 'Definition of Done (DoD)' mean?",
+  opts: [
+    "A list of tasks assigned to each developer",
+    "The shared agreement on what 'complete' means for any user story or sprint",
+    "A formal sign-off document signed by the Product Owner only",
+    "The final release checklist submitted to management at project end"
+  ],
+  ans: 1,
+  exp: "DoD is a shared checklist that defines when a user story or sprint increment is truly complete (coded, tested, reviewed, deployable)."
+},
+{
+  q: "An Epic in Scrum is best described as:",
+  opts: [
+    "A single user story with high business value",
+    "A large feature group that is too big for one sprint and is broken into User Stories",
+    "A sprint planning meeting that covers multiple teams",
+    "A release containing all product features"
+  ],
+  ans: 1,
+  exp: "An Epic is a large body of work (related features) that is too big for one sprint — it is broken down into multiple User Stories."
+},
+{
+  q: "The Acceptance Criteria format 'Given–When–Then' is used because:",
+  opts: [
+    "It matches the format used in traditional SRS documents",
+    "It creates testable, specific, and unambiguous conditions for each user story",
+    "It is required by the Scrum Master for all documentation",
+    "It replaces the need for a Product Backlog"
+  ],
+  ans: 1,
+  exp: "Given-When-Then makes each AC testable and specific: Given [context], When [action], Then [expected result] — no ambiguity."
+}
+
+]; // end BANK
+
+// ════════════════════════
+// QUIZ ENGINE
+// ════════════════════════
+const QUIZ_SIZE = 30;
+const CIRCUMFERENCE = 2 * Math.PI * 22;
+
+let sessionQuestions = [];  // 30 randomly picked & shuffled questions
+let currentQ = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let answered = false;
+let timerInterval = null;
+let timeLeft = 30;
+let playerName = '';
+let results = [];
+let sessionSeed = '';
+
+// Fisher-Yates shuffle
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Pick 30 random questions and also shuffle each question's options
+function buildSession() {
+  const picked = shuffle(BANK).slice(0, QUIZ_SIZE);
+  // For each question, shuffle options and track new correct index
+  return picked.map(q => {
+    const indices = [0, 1, 2, 3];
+    const shuffled = shuffle(indices);
+    const newOpts = shuffled.map(i => q.opts[i]);
+    const newAns = shuffled.indexOf(q.ans);
+    return { q: q.q, opts: newOpts, ans: newAns, exp: q.exp };
+  });
+}
+
+function startQuiz() {
+  playerName = document.getElementById('nameInput').value.trim();
+  if (!playerName) { alert('Please enter your name to start.'); return; }
+  sessionSeed = 'Set #' + Math.floor(Math.random() * 9000 + 1000);
+  sessionQuestions = buildSession();
+  currentQ = 0; correctCount = 0; wrongCount = 0; results = [];
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'block';
+  updateScoreChips();
+  loadQuestion();
+}
+
+function loadQuestion() {
+  if (currentQ >= QUIZ_SIZE) { showResult(); return; }
+  answered = false;
+  const data = sessionQuestions[currentQ];
+
+  document.getElementById('qNum').textContent = currentQ + 1;
+  document.getElementById('qLabel').textContent = 'QUESTION ' + String(currentQ + 1).padStart(2, '0');
+  document.getElementById('qText').textContent = data.q;
+  document.getElementById('progressBar').style.width = ((currentQ / QUIZ_SIZE) * 100) + '%';
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('skipBtn').style.display = 'inline-flex';
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.textContent = '';
+
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  data.opts.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+    div.onclick = () => selectAnswer(i, div);
+    container.appendChild(div);
+  });
+
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 30;
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerUI();
+    if (timeLeft <= 0) { clearInterval(timerInterval); if (!answered) timeoutQuestion(); }
+  }, 1000);
+}
+
+function updateTimerUI() {
+  const ring = document.getElementById('timerRing');
+  const num = document.getElementById('timerNum');
+  num.textContent = timeLeft;
+  ring.style.strokeDashoffset = CIRCUMFERENCE * (1 - timeLeft / 30);
+  ring.style.stroke = timeLeft <= 10 ? '#f7506e' : timeLeft <= 20 ? '#f7c94f' : '#4f8ef7';
+}
+
+function selectAnswer(idx, el) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+  const data = sessionQuestions[currentQ];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(o => o.classList.add('disabled'));
+  const isCorrect = idx === data.ans;
+  if (isCorrect) { el.classList.add('correct'); correctCount++; }
+  else { el.classList.add('wrong'); opts[data.ans].classList.add('correct'); wrongCount++; }
+  results.push({ qi: currentQ, selected: idx, correct: data.ans, status: isCorrect ? 'correct' : 'wrong' });
+  updateScoreChips();
+  showFeedback(isCorrect ? 'correct' : 'wrong', data.exp);
+  document.getElementById('skipBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'inline-flex';
+}
+
+function timeoutQuestion() {
+  answered = true;
+  const data = sessionQuestions[currentQ];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(o => o.classList.add('disabled'));
+  opts[data.ans].classList.add('correct');
+  wrongCount++;
+  results.push({ qi: currentQ, selected: -1, correct: data.ans, status: 'timeout' });
+  updateScoreChips();
+  showFeedback('timeout', "Time's up! Correct answer: " + data.opts[data.ans]);
+  document.getElementById('skipBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'inline-flex';
+}
+
+function skipQuestion() {
+  if (answered) return;
+  clearInterval(timerInterval);
+  answered = true;
+  const data = sessionQuestions[currentQ];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(o => o.classList.add('disabled'));
+  opts[data.ans].classList.add('correct');
+  wrongCount++;
+  results.push({ qi: currentQ, selected: -1, correct: data.ans, status: 'timeout' });
+  updateScoreChips();
+  showFeedback('timeout', 'Skipped. Correct answer: ' + data.opts[data.ans]);
+  document.getElementById('skipBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'inline-flex';
+}
+
+function showFeedback(type, msg) {
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box show feedback-' + type;
+  fb.innerHTML = (type === 'correct' ? '✅ ' : type === 'wrong' ? '❌ ' : '⏰ ') + msg;
+}
+
+function nextQuestion() { currentQ++; loadQuestion(); }
+
+function updateScoreChips() {
+  document.getElementById('correctCount').textContent = '✓ ' + correctCount;
+  document.getElementById('wrongCount').textContent = '✗ ' + wrongCount;
+}
+
+function showResult() {
+  document.getElementById('quizScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+  const pct = Math.round((correctCount / QUIZ_SIZE) * 100);
+  document.getElementById('resName').textContent = playerName;
+  document.getElementById('statCorrect').textContent = correctCount;
+  document.getElementById('statWrong').textContent = wrongCount;
+  document.getElementById('statScore').textContent = pct + '%';
+  document.getElementById('seedNote').textContent = sessionSeed + ' · 30 of 50 questions';
+
+  let grade, label, color;
+  if (pct >= 85) { grade='A'; label='🏆 Excellent!'; color='var(--success)'; }
+  else if (pct >= 75) { grade='B'; label='👍 Good Job!'; color='var(--accent)'; }
+  else if (pct >= 65) { grade='C'; label='📚 Keep Learning'; color='var(--warning)'; }
+  else if (pct >= 55) { grade='D'; label='💪 Need Practice'; color='var(--accent2)'; }
+  else { grade='E'; label='📖 Review Material'; color='var(--danger)'; }
+
+  const gradeEl = document.getElementById('resGrade');
+  gradeEl.textContent = grade;
+  gradeEl.style.color = color;
+  gradeEl.classList.add('pop');
+  document.getElementById('resLabel').textContent = label;
+
+  const container = document.getElementById('reviewContainer');
+  container.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  results.forEach((r, idx) => {
+    const data = sessionQuestions[r.qi];
+    const div = document.createElement('div');
+    div.className = 'review-item r-' + r.status;
+    let ansHTML = `<div class="rev-ans"><div class="rev-dot dot-correct"></div><span><strong>Correct:</strong> (${letters[r.correct]}) ${data.opts[r.correct]}</span></div>`;
+    if (r.status !== 'correct' && r.selected >= 0) {
+      ansHTML += `<div class="rev-ans"><div class="rev-dot dot-wrong"></div><span><strong>Your answer:</strong> (${letters[r.selected]}) ${data.opts[r.selected]}</span></div>`;
+    } else if (r.status === 'timeout') {
+      ansHTML += `<div class="rev-ans"><div class="rev-dot dot-timeout"></div><span><strong>Skipped / Timeout</strong></span></div>`;
+    }
+    div.innerHTML = `
+      <div class="review-qnum">Q${idx+1} · ${r.status.toUpperCase()}</div>
+      <div class="review-qtext">${data.q}</div>
+      <div class="review-answers">${ansHTML}<div class="rev-ans" style="margin-top:4px;color:var(--muted)"><span>💡 ${data.exp}</span></div></div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function resetQuiz() {
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('startScreen').style.display = 'block';
+  document.getElementById('nameInput').value = '';
+}
+</script>
+</body>
+</html>
