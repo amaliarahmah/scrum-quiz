@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis Agile & Scrum — Kelas 4SI01</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --white:#ffffff; --bg:#f5f6fa; --surface:#ffffff; --border:#e2e5ef;
+  --blue:#2563eb; --blue-lt:#eff4ff; --blue-md:#dbeafe;
+  --black:#0f172a; --gray:#64748b; --gray-lt:#f1f5f9;
+  --success:#16a34a; --success-lt:#f0fdf4;
+  --danger:#dc2626; --danger-lt:#fef2f2;
+  --warn:#d97706; --warn-lt:#fffbeb;
+  --radius:12px; --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.05);
+}
+body { background:var(--bg); color:var(--black); font-family:'Poppins',sans-serif; font-size:15px; line-height:1.6; min-height:100vh; }
+.wrap { max-width:680px; margin:0 auto; padding:40px 20px 80px; }
+
+.site-header { text-align:center; margin-bottom:32px; }
+.kelas-tag { display:inline-block; background:var(--blue-lt); color:var(--blue); font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; padding:4px 14px; border-radius:20px; margin-bottom:12px; }
+.site-header h1 { font-size:clamp(22px,4vw,30px); font-weight:700; color:var(--black); margin-bottom:6px; }
+.site-header .meta { color:var(--blue); font-size:13px; font-weight:500; }
+.site-header .note { margin-top:8px; color:var(--gray); font-size:12px; }
+
+.card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:32px 28px; box-shadow:var(--shadow); }
+
+.field { margin-bottom:20px; }
+.field label { display:block; font-size:12px; font-weight:600; color:var(--gray); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
+.field select, .field input[type="text"] { width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:var(--radius); font-family:'Poppins',sans-serif; font-size:14px; color:var(--black); background:var(--white); outline:none; transition:border-color .18s,box-shadow .18s; appearance:none; -webkit-appearance:none; }
+.field select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:36px; }
+.field select:focus, .field input[type="text"]:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
+
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:13px 24px; border-radius:var(--radius); font-family:'Poppins',sans-serif; font-size:14px; font-weight:600; cursor:pointer; border:none; transition:all .18s; }
+.btn-full { width:100%; }
+.btn-blue { background:var(--blue); color:#fff; }
+.btn-blue:hover { background:#1d4ed8; transform:translateY(-1px); box-shadow:0 4px 16px rgba(37,99,235,0.3); }
+.btn-outline { background:transparent; color:var(--blue); border:1.5px solid var(--blue); }
+.btn-outline:hover { background:var(--blue-lt); }
+.btn-gray { background:var(--gray-lt); color:var(--gray); border:1.5px solid var(--border); }
+.btn-gray:hover { background:#e2e8f0; }
+.btn-sm { padding:9px 18px; font-size:13px; }
+
+.quiz-topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; gap:12px; }
+.q-label { font-size:12px; font-weight:600; color:var(--gray); text-transform:uppercase; letter-spacing:0.8px; }
+.score-row { display:flex; gap:8px; margin-top:4px; }
+.chip { font-size:12px; font-weight:600; padding:3px 10px; border-radius:20px; }
+.chip-ok { background:var(--success-lt); color:var(--success); }
+.chip-err { background:var(--danger-lt); color:var(--danger); }
+
+.timer-ring { position:relative; width:48px; height:48px; flex-shrink:0; }
+.timer-ring svg { transform:rotate(-90deg); }
+.timer-ring circle { fill:none; stroke-width:3.5; stroke-linecap:round; }
+.t-bg { stroke:var(--border); }
+.t-fg { stroke:var(--blue); stroke-dasharray:132; stroke-dashoffset:0; transition:stroke-dashoffset 1s linear,stroke .3s; }
+.timer-num { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:var(--black); }
+
+.progress-wrap { margin-bottom:20px; }
+.progress-track { height:5px; background:var(--border); border-radius:3px; overflow:hidden; }
+.progress-fill { height:100%; background:var(--blue); border-radius:3px; transition:width .4s ease; }
+.progress-text { font-size:11px; color:var(--gray); margin-top:5px; text-align:right; }
+
+.q-text { font-size:16px; font-weight:600; color:var(--black); line-height:1.65; margin-bottom:20px; }
+
+.options { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+.option { display:flex; align-items:flex-start; gap:12px; padding:13px 16px; border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; transition:all .15s; background:var(--white); font-size:14px; line-height:1.5; color:var(--black); }
+.option:hover:not(.opt-disabled) { border-color:var(--blue); background:var(--blue-lt); }
+.option.opt-correct { border-color:var(--success); background:var(--success-lt); }
+.option.opt-wrong { border-color:var(--danger); background:var(--danger-lt); }
+.option.opt-disabled { cursor:default; }
+.opt-key { width:26px; height:26px; border-radius:7px; background:var(--gray-lt); color:var(--gray); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .15s; }
+.option.opt-correct .opt-key { background:var(--success); color:#fff; }
+.option.opt-wrong .opt-key { background:var(--danger); color:#fff; }
+
+.feedback { padding:12px 16px; border-radius:var(--radius); font-size:13px; font-weight:500; line-height:1.55; margin-bottom:16px; display:none; animation:fadeUp .25s ease; }
+.feedback.show { display:block; }
+.fb-correct { background:var(--success-lt); color:#166534; border:1px solid #bbf7d0; }
+.fb-wrong { background:var(--danger-lt); color:#991b1b; border:1px solid #fecaca; }
+.fb-timeout { background:var(--warn-lt); color:#92400e; border:1px solid #fde68a; }
+
+.action-row { display:flex; justify-content:flex-end; gap:10px; }
+.divider { height:1px; background:var(--border); margin:24px 0; }
+
+.result-hero { text-align:center; padding:28px 20px 20px; }
+.result-pct { font-size:64px; font-weight:700; line-height:1; margin-bottom:6px; color:var(--blue); }
+.result-label { font-size:16px; color:var(--gray); margin-bottom:4px; }
+.result-meta { font-size:12px; color:var(--gray); margin-top:6px; }
+
+.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:20px 0; }
+.stat-box { background:var(--gray-lt); border-radius:var(--radius); padding:16px 10px; text-align:center; }
+.stat-val { font-size:26px; font-weight:700; margin-bottom:2px; }
+.stat-lbl { font-size:11px; color:var(--gray); font-weight:500; text-transform:uppercase; letter-spacing:.5px; }
+
+.result-actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+.sending-note { text-align:center; font-size:13px; color:var(--gray); margin-top:16px; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes popIn { 0%{transform:scale(.8);opacity:0} 70%{transform:scale(1.05)} 100%{transform:scale(1);opacity:1} }
+.pop { animation:popIn .45s cubic-bezier(.34,1.56,.64,1) forwards; }
+
+@media print {
+  body { background:white; }
+  .btn,.quiz-topbar,.progress-wrap,.action-row,.options { display:none !important; }
+  .card { box-shadow:none; border:1px solid #ccc; }
+}
+@media (max-width:520px) {
+  .card { padding:24px 18px; }
+  .stats-row { grid-template-columns:1fr 1fr; }
+  .stat-box:last-child { grid-column:span 2; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="site-header">
+    <div class="kelas-tag">STT Terpadu Nurul Fikri · Manajemen Proyek</div>
+    <h1>Kuis Agile &amp; Scrum</h1>
+    <div class="meta">30 soal &nbsp;·&nbsp; 30 detik per soal</div>
+    <div class="note">Soal berpindah otomatis setiap 30 detik, baik ada maupun tidak ada jawaban.</div>
+  </div>
+
+  <!-- START -->
+  <div id="startScreen" class="card">
+    <div class="field">
+      <label>Nama Mahasiswa</label>
+      <select id="nameSelect">
+        <option value="" disabled selected>— Pilih nama —</option>
+        <option>TES DOSEN</option>
+        <option>TES ASISTEN 1</option>
+        <option>TES ASISTEN 2</option>
+        <option>TES ASISTEN 3</option>
+        <option disabled>──────────────</option>
+        <option>ADAM AL MUHARROM SHOLEH</option>
+        <option>ADIBAH SHOLIHAH</option>
+        <option>AGHISNA FILLAH NUR KHOLIFAH</option>
+        <option>AHMAD DZAKY ROMADHON</option>
+        <option>AHMAD FAYIZ ZAINAL ABIDIN</option>
+        <option>AHMAD SYAUQI RAIHAN</option>
+        <option>ALYA AZ-ZAHRA</option>
+        <option>AMALIA RAHMAWATI</option>
+        <option>AMMAR FALAH GUNAWAN</option>
+        <option>ANDINI</option>
+        <option>ANGGA DWI PRASETYO</option>
+        <option>APRILIA SALSABILA</option>
+        <option>ARIEL NURRIZKY HIDAYAT</option>
+        <option>ASNYATI</option>
+        <option>AULYA REA SAGITA</option>
+        <option>BAGUS PURNOMO PUTRA SETIAWAN</option>
+        <option>CLARRITA ISABELLA PUTRI</option>
+        <option>DAFFA MUMTAZA AZZAM</option>
+        <option>DAVID ALFARISI FRIYANDANA</option>
+        <option>DEA SITI BADRIAH</option>
+        <option>DELA NUR'AIN</option>
+        <option>DHANI ABZA</option>
+        <option>DIAS SUTISNA SOPIAN</option>
+        <option>EKA FERDY FEBRIYANSYAH</option>
+        <option>ERZA RIZFIA WIDIARTI</option>
+        <option>ESRANATA S. AMELIA BATUBARA</option>
+        <option>FACHRI HAMSYAH</option>
+        <option>FADHEL OMAR PASHA</option>
+        <option>FADHILAH MAHARANI</option>
+        <option>FAJRIN AULIA FITRAH HARAHAP</option>
+        <option>FARA NABILA</option>
+        <option>FARHAN ADITYA</option>
+        <option>FARIZA ZEA DE ASMINTO</option>
+        <option>FATHIYAH AZ ZAHRA KARIM</option>
+        <option>FATIMAH NAZWA SIREGAR</option>
+        <option>FIKAS NASFARIZI</option>
+        <option>GILANG AJI SAMPURNO</option>
+        <option>GILANG HADIWIJAYA</option>
+        <option>GRYPHON DAYFULLAH</option>
+        <option>HABWAH NURZHAFIRAH</option>
+        <option>HANUNG TRI ATMOJO</option>
+        <option>HARUM HOIRUNISA</option>
+        <option>HELENA MASHITA SINURAT</option>
+        <option>HELMA HAFIZA AULIA</option>
+        <option>HILDA RAUDOTUL JANAH</option>
+        <option>HILWAH QURROTUL AINI</option>
+        <option>INDAH WULANDARI</option>
+        <option>IQBAL HERMAWAN</option>
+        <option>IRZHY KHALIEF ARRIZQI</option>
+        <option>IZZAH HIMATUL ASHFIYA</option>
+        <option>JULIANA FRISKA FAHRUDI</option>
+        <option>KAMILA QAISARA BATRISYIA</option>
+        <option>KHAILA NAZWA</option>
+        <option>KHULUQUL MAHMUDAH</option>
+        <option>LAILA FITRI</option>
+        <option>LISA RAHMA FITRI</option>
+        <option>M. ILHAM NADI SAPUTRA</option>
+        <option>MAHENDRA RAMADANI SYAH PUTRA</option>
+        <option>MANZILAH RAHMAH RAMADHANI</option>
+        <option>MEILA AYU ZAHARA</option>
+        <option>MOCHAMMAD IRVAN WIJAYA</option>
+        <option>MUHAMAD FAIZAL FIKRI</option>
+        <option>MUHAMAD IHLAL</option>
+        <option>MUHAMAD ILHAM RAMADAN</option>
+        <option>MUHAMAD SYUJA YAZID BECKHAM PUTRA MANUMAYASA</option>
+        <option>MUHAMMAD AKHDAN SYAMIL</option>
+        <option>MUHAMMAD HAIKAL MUFIDZ</option>
+        <option>MUHAMMAD IBNU SABIL</option>
+        <option>MUHAMMAD RAFLI</option>
+        <option>MUHAMMAD RAFLY FAUZAN</option>
+        <option>MUHAMMAD SYAHRUL FAUZAN</option>
+        <option>MULANDARI PUTRI</option>
+        <option>NAESILA</option>
+        <option>NAILAH AULIA RUSDAH</option>
+        <option>NAILAH HUSNA TUADA</option>
+        <option>NAJWAN ZUHDI</option>
+        <option>NAKESHYA SHIVA AZ ZAHRA</option>
+        <option>NAYLLA AGUSTINA PUTRIA</option>
+        <option>NEISHYA APRILLIA RAHMAWATI</option>
+        <option>NUR AGNIA</option>
+        <option>NUR RAHMA TIAWATI</option>
+        <option>NURUL INTAN</option>
+        <option>NURUL KAIFA</option>
+        <option>NURUL SYAHIDAH</option>
+        <option>OKTAFITRIA RAMADHANI</option>
+        <option>PUTRI AISAZAHRA</option>
+        <option>PUTRI RATNANINGTYAS</option>
+        <option>QISTI SHOFIYAH</option>
+        <option>QOIS NAHWAL FIRDAUS</option>
+        <option>QOMARIAH SYIFA FADILLAH</option>
+        <option>RAHMA HERVINA DWI LESTARI</option>
+        <option>RAHMAH KAMILA</option>
+        <option>REFI AGUSTIN PURNAMA</option>
+        <option>RESTU YUNISSA ZAHIRAH</option>
+        <option>RICO RIWANTO</option>
+        <option>RIFKA AULIA SYACHPUTRI</option>
+        <option>RIZKI TRI AMELIA</option>
+        <option>RIZQI FAJAR MAULANA</option>
+        <option>SALSABILA</option>
+        <option>SALWA SALEYSIA PUTRI</option>
+        <option>SANIA AGUSTIN</option>
+        <option>SASKIA JULAIKA</option>
+        <option>SASKIA RAMADANI</option>
+        <option>SEPHIA INNAYATUL MAULA</option>
+        <option>SHAKYLA FITRI FAIHA</option>
+        <option>SHELFIA ANATASYA DWI ARTHA</option>
+        <option>SINTA</option>
+        <option>SYAFIQ ALWAN SYAUQI</option>
+        <option>SYIFA MAULIDA KARTINI</option>
+        <option>TRI FEBRIANSYAH</option>
+        <option>TRI RAHMAT SUBHAN</option>
+        <option>TRINITA AGUSTIN</option>
+        <option>WAHYU AKBAR PRATAMA SIREGAR</option>
+        <option>YENI</option>
+        <option>ZAHRA ZASKIA AULIA PUTRI</option>
+        <option>ZAHRA ZULIYANI UTAMY</option>
+        <option>ZELDA HAPSOH</option>
+        <option>ZHAHARA N SUKIRMAN</option>
+        <option>ZULFA HASANUL KARIM</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>NIM</label>
+      <input type="text" id="nimInput" placeholder="Masukkan NIM" maxlength="20"/>
+    </div>
+    <button class="btn btn-blue btn-full" onclick="startQuiz()">Mulai Kuis →</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quizScreen" style="display:none">
+    <div class="quiz-topbar">
+      <div>
+        <div class="q-label" id="qLabel">Soal 1 dari 30</div>
+        <div class="score-row">
+          <span class="chip chip-ok" id="chipOk">✓ 0</span>
+          <span class="chip chip-err" id="chipErr">✗ 0</span>
+        </div>
+      </div>
+      <div class="timer-ring">
+        <svg width="48" height="48" viewBox="0 0 48 48">
+          <circle class="t-bg" cx="24" cy="24" r="21"/>
+          <circle class="t-fg" id="timerArc" cx="24" cy="24" r="21"/>
+        </svg>
+        <div class="timer-num" id="timerNum">30</div>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+      <div class="progress-text" id="progText">0 / 30</div>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="optBox"></div>
+      <div class="feedback" id="feedbackBox"></div>
+    </div>
+    <div class="action-row">
+      <button class="btn btn-gray btn-sm" id="skipBtn" onclick="skipQ()">Lewati</button>
+      <button class="btn btn-blue btn-sm" id="nextBtn" onclick="nextQ()" style="display:none">Lanjut →</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="resultScreen" style="display:none">
+    <div class="card" style="margin-bottom:16px">
+      <div class="result-hero">
+        <div class="result-pct pop" id="resPct"></div>
+        <div class="result-label" id="resLabel"></div>
+        <div class="result-meta" id="resMeta"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-val" id="stOk" style="color:var(--success)"></div><div class="stat-lbl">Benar</div></div>
+        <div class="stat-box"><div class="stat-val" id="stErr" style="color:var(--danger)"></div><div class="stat-lbl">Salah / Lewat</div></div>
+        <div class="stat-box"><div class="stat-val" id="stPct" style="color:var(--blue)"></div><div class="stat-lbl">Skor</div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="result-actions">
+        <button class="btn btn-outline btn-sm" onclick="window.print()">🖨 Print</button>
+        <button class="btn btn-gray btn-sm" onclick="resetQuiz()">↩ Ulangi</button>
+      </div>
+      <div class="sending-note" id="sendingNote"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const BANK = [
+{q:"Dalam Agile, versi pertama produk yang dirilis dengan fitur paling inti untuk mendapatkan umpan balik pengguna secepatnya disebut:",opts:["Prototipe akhir","Versi beta","Produk minimum yang layak","Rilis perdana"],ans:2,exp:"Produk minimum yang layak (MVP) adalah versi paling sederhana yang memberikan nilai nyata kepada pengguna dan memungkinkan umpan balik awal."},
+{q:"Pernyataan mana yang PALING TEPAT membedakan Agile dari pendekatan Waterfall?",opts:["Agile menggunakan lebih banyak dokumentasi daripada Waterfall","Agile menyelesaikan seluruh perencanaan sebelum pengembangan dimulai","Agile menyambut perubahan kebutuhan kapan pun selama proyek berlangsung","Agile hanya cocok untuk proyek berskala kecil dengan satu orang pengembang"],ans:2,exp:"Salah satu prinsip utama Agile adalah menyambut perubahan kebutuhan bahkan di tahap akhir, demi memberikan nilai lebih kepada pelanggan."},
+{q:"Metodologi Agile yang memvisualisasikan alur kerja menggunakan papan dengan kolom status pekerjaan adalah:",opts:["Scrum","Kanban","Extreme Programming","Crystal"],ans:1,exp:"Kanban menggunakan papan visual dengan kolom seperti 'Akan Dikerjakan', 'Sedang Dikerjakan', dan 'Selesai' untuk melacak alur kerja."},
+{q:"Dalam pola pikir Agile, hal yang lebih diutamakan dibandingkan mengikuti proses dan alat yang canggih adalah:",opts:["Dokumentasi yang lengkap dan terstruktur","Interaksi individu dan kolaborasi tim","Negosiasi kontrak yang ketat dengan klien","Mengikuti rencana awal tanpa penyimpangan"],ans:1,exp:"Manifesto Agile mengutamakan interaksi individu dan kolaborasi tim di atas proses dan alat."},
+{q:"Dalam hal pengiriman hasil kerja, Agile berbeda dari pendekatan tradisional karena:",opts:["Produk diserahkan satu kali setelah semua fitur selesai dan diverifikasi klien","Produk dikirimkan bertahap dalam bagian kecil yang bisa langsung digunakan","Produk hanya dikirim setelah seluruh anggaran proyek habis terserap tim","Produk dikirim sesuai jadwal tahunan yang ditetapkan manajemen di kontrak awal"],ans:1,exp:"Agile menggunakan pengiriman inkremental — setiap iterasi menghasilkan bagian produk nyata yang dapat diuji pengguna."},
+{q:"Extreme Programming (XP) menekankan pada:",opts:["Visualisasi alur kerja menggunakan papan dengan kolom status yang terlihat jelas","Pengelolaan proyek berskala besar yang melibatkan banyak departemen sekaligus","Kualitas perangkat lunak melalui praktik seperti pemrograman berpasangan","Pembagian kerja ke dalam sprint dengan peran yang sangat ketat dan terdefinisi"],ans:2,exp:"XP berfokus pada keunggulan teknis — pemrograman berpasangan, pengembangan berbasis pengujian, dan integrasi berkelanjutan."},
+{q:"Hubungan tim Agile dengan pengguna akhir yang paling mencerminkan prinsip Agile adalah:",opts:["Pengguna dilibatkan hanya saat penandatanganan kontrak dan serah terima produk","Pengguna diisolasi agar tim bisa bekerja tanpa gangguan perubahan dari luar","Pengguna berkolaborasi aktif dan memberi umpan balik sepanjang pengembangan","Pengguna menyerahkan semua keputusan teknis sepenuhnya kepada tim developer"],ans:2,exp:"Agile menekankan kolaborasi pengguna yang berkelanjutan di setiap iterasi."},
+{q:"Sebuah tim pengembang mendapati kebutuhan klien berubah setelah tiga minggu pengembangan. Respons paling sesuai prinsip Agile adalah:",opts:["Menolak perubahan karena akan mengganggu rencana yang sudah ada","Meminta klien menandatangani dokumen perubahan formal sebelum dilanjutkan","Menyesuaikan backlog dan mengakomodasi perubahan di sprint berikutnya","Menghentikan proyek dan memulai perencanaan dari awal"],ans:2,exp:"Agile dirancang untuk mengakomodasi perubahan — Product Backlog diperbarui dan perubahan dijadwalkan ke sprint berikutnya."},
+{q:"Salah satu nilai utama dalam Manifesto Agile adalah mengutamakan perangkat lunak yang berfungsi dibandingkan:",opts:["Kolaborasi dengan pelanggan","Respons terhadap perubahan","Dokumentasi yang komprehensif","Interaksi antarindividu"],ans:2,exp:"Manifesto Agile menyatakan perangkat lunak yang berfungsi lebih dari dokumentasi yang komprehensif — produk yang bekerja lebih diutamakan."},
+{q:"Iterasi dalam Agile menghasilkan:",opts:["Dokumen spesifikasi kebutuhan yang diperbarui setiap siklusnya","Laporan kemajuan formal untuk diserahkan kepada manajemen senior","Revisi rencana proyek keseluruhan berdasarkan temuan tim teknis","Bagian produk nyata yang dapat diuji dan memberikan nilai bagi pengguna"],ans:3,exp:"Setiap iterasi menghasilkan increment — bagian produk yang nyata, dapat diuji, dan memiliki nilai bagi pengguna."},
+{q:"Konsep 'inspect and adapt' dalam Agile berarti tim secara rutin:",opts:["Memeriksa anggaran dan menyesuaikan pengeluaran setiap bulannya","Meninjau hasil kerja dan menyesuaikan cara kerja berdasarkan temuan","Mengaudit dokumentasi dan memperbarui spesifikasi teknis yang ada","Memeriksa kehadiran anggota dan menyesuaikan jadwal kerja mingguan"],ans:1,exp:"'Inspect and adapt' adalah inti empirisme Agile — evaluasi hasil dan proses, lalu lakukan penyesuaian yang diperlukan."},
+{q:"Sebuah organisasi menerapkan Agile tetapi mewajibkan semua kebutuhan didefinisikan lengkap sebelum sprint pertama. Masalah utama dari situasi ini adalah:",opts:["Sprint pertama akan berjalan terlalu cepat tanpa arah yang cukup jelas","Tim pengembang tidak memiliki waktu yang cukup untuk menulis kode","Fleksibilitas yang menjadi keunggulan utama Agile menjadi hilang","Product Owner tidak akan memiliki pekerjaan selama proyek berlangsung"],ans:2,exp:"Mewajibkan semua kebutuhan selesai di awal adalah pola pikir Waterfall — menghilangkan keunggulan utama Agile yaitu kemampuan beradaptasi."},
+{q:"Lima nilai Scrum yang harus dipegang oleh seluruh anggota tim adalah:",opts:["Transparansi, Inspeksi, Adaptasi, Kolaborasi, Kecepatan","Keberanian, Fokus, Komitmen, Rasa Hormat, Keterbukaan","Perencanaan, Pelaksanaan, Pengiriman, Evaluasi, Peningkatan","Kejujuran, Disiplin, Inovasi, Kolaborasi, Keunggulan"],ans:1,exp:"Lima Nilai Scrum adalah Keberanian, Fokus, Komitmen, Rasa Hormat, dan Keterbukaan."},
+{q:"Scrum Master berbeda dari manajer proyek tradisional karena Scrum Master:",opts:["Memiliki wewenang penuh untuk memecat anggota yang tidak produktif","Bertanggung jawab atas anggaran dan jadwal keseluruhan proyek","Melayani tim dengan memfasilitasi proses dan menghilangkan hambatan","Menetapkan dan mendistribusikan tugas harian kepada setiap pengembang"],ans:2,exp:"Scrum Master adalah servant-leader — memfasilitasi proses dan membantu tim bekerja efektif, bukan mengelola atau mengarahkan."},
+{q:"Nilai 'Keberanian' dalam Scrum diwujudkan melalui:",opts:["Mengambil risiko finansial besar demi keuntungan maksimal proyek","Menyalahkan anggota lain ketika target sprint tidak berhasil tercapai","Berani menyampaikan pendapat, meminta bantuan, dan mencoba hal baru","Mengabaikan umpan balik pengguna yang dianggap tidak cukup relevan"],ans:2,exp:"Keberanian dalam Scrum berarti berani bersuara, meminta bantuan, mencoba pendekatan baru, dan berani tidak setuju."},
+{q:"Nilai 'Fokus' dalam Scrum berarti:",opts:["Tim hanya berkomunikasi dengan Product Owner dan memblokir pihak lain","Scrum Master membuat laporan kemajuan terperinci untuk manajemen setiap hari","Setiap anggota menyelesaikan pekerjaan sprint yang sudah disepakati bersama","Tim mengabaikan semua masukan eksternal sampai sprint resmi selesai"],ans:2,exp:"Fokus berarti tim berkomitmen menyelesaikan yang sudah disepakati dalam sprint — tidak terpecah oleh pekerjaan di luar sprint."},
+{q:"Nilai 'Keterbukaan' dalam Scrum mendorong anggota tim untuk:",opts:["Membagikan seluruh kode sumber proyek secara terbuka di internet","Membuka akses Product Backlog kepada semua pengguna sistem secara langsung","Melaporkan semua aktivitas tim kepada manajemen senior setiap harinya","Berbagi hambatan yang dihadapi agar seluruh tim dapat saling membantu"],ans:3,exp:"Keterbukaan berarti semua pekerjaan dan kendala terlihat — ketika seseorang menghadapi masalah, ia terbuka agar tim bisa membantu."},
+{q:"Tim Pengembang dalam Scrum yang ideal bersifat:",opts:["Dikelola ketat Scrum Master yang menentukan tugas setiap harinya","Mandiri dalam menentukan cara kerja dan memiliki semua keahlian yang dibutuhkan","Terdiri dari satu spesialisasi saja agar fokus pada satu jenis pekerjaan","Bergantung pada Product Owner untuk memutuskan urutan pengerjaan semua tugas"],ans:1,exp:"Tim Pengembang bersifat self-organizing dan cross-functional — menentukan cara kerja sendiri dan memiliki semua keahlian yang dibutuhkan."},
+{q:"'Velocity' dalam Scrum digunakan untuk:",opts:["Mengukur kecepatan koneksi internet yang digunakan oleh tim pengembang","Menghitung jumlah rapat yang berhasil dilakukan dalam satu sprint penuh","Menentukan berapa banyak anggota tambahan yang dibutuhkan untuk proyek","Memperkirakan kapasitas tim berdasarkan rata-rata pekerjaan yang diselesaikan"],ans:3,exp:"Velocity mengukur rata-rata pekerjaan yang diselesaikan per sprint — digunakan untuk memperkirakan kapasitas sprint berikutnya."},
+{q:"Nilai 'Komitmen' dalam Scrum berarti:",opts:["Menandatangani kontrak formal dengan klien di setiap awal sprint dimulai","Product Owner berkomitmen tidak mengubah backlog selama sprint berlangsung","Manajemen senior menyediakan seluruh sumber daya yang diminta tim kapanpun","Anggota tim sungguh-sungguh menyelesaikan apa yang telah disepakati bersama"],ans:3,exp:"Komitmen bukan soal kontrak — ini tentang kepercayaan bahwa setiap anggota benar-benar menyelesaikan yang mereka sepakati."},
+{q:"Nilai 'Rasa Hormat' dalam Scrum ditunjukkan dengan:",opts:["Selalu menyetujui keputusan Scrum Master tanpa pernah memberikan masukan","Menghindari semua diskusi yang berpotensi menimbulkan ketidaksetujuan antaranggota","Mengakui kontribusi setiap anggota dan menghargai perbedaan keahlian dalam tim","Memprioritaskan kepentingan anggota senior di atas kepentingan tim secara keseluruhan"],ans:2,exp:"Rasa Hormat berarti menghargai setiap anggota — mengakui kontribusinya dan menghargai perbedaan keahlian."},
+{q:"Seorang anggota tim mengalami hambatan teknis yang menghalangi pekerjaannya. Tindakan paling sesuai nilai Scrum adalah:",opts:["Diam menunggu solusi sendiri agar tidak terlihat tidak kompeten di depan tim","Langsung mengabaikan tugas itu dan berpindah mengerjakan tugas yang lain","Terbuka menyampaikan hambatan saat Daily Standup agar tim dapat membantu","Melaporkan hambatan langsung ke manajemen tanpa memberitahu tim terlebih dahulu"],ans:2,exp:"Nilai Keterbukaan dan Keberanian mendorong anggota terbuka tentang hambatan — Scrum Master bertugas membantu menghilangkannya."},
+{q:"Perbedaan utama antara Product Owner dan Scrum Master adalah:",opts:["Product Owner mengelola tim, Scrum Master mengelola anggaran proyek","Product Owner menulis kode, Scrum Master membuat seluruh dokumentasi teknis","Keduanya memiliki peran yang sama namun menggunakan sebutan yang berbeda","Product Owner berfokus pada nilai produk, Scrum Master berfokus pada kelancaran proses"],ans:3,exp:"Product Owner memastikan tim membangun produk yang tepat, Scrum Master memastikan tim bekerja dengan cara yang tepat."},
+{q:"'Hutang teknis' dalam Scrum mengacu pada:",opts:["Tagihan perangkat lunak berbayar yang belum dilunasi oleh klien proyek","Jumlah fitur yang belum sempat dimasukkan ke dalam Product Backlog tim","Selisih antara estimasi waktu dan durasi pengerjaan aktual sebuah fitur","Konsekuensi dari jalan pintas teknis yang harus diperbaiki di kemudian hari"],ans:3,exp:"Technical debt timbul saat tim memilih solusi cepat — hutang ini harus dibayar dengan perbaikan di sprint mendatang."},
+{q:"Dalam Scrum, siapa yang memiliki otoritas untuk memutuskan urutan prioritas item di Product Backlog?",opts:["Tim Pengembang, karena mereka yang paling tahu kompleksitas teknis","Scrum Master, karena bertanggung jawab atas kelancaran proses","Seluruh anggota tim Scrum secara bersama-sama melalui voting","Product Owner, karena mewakili kepentingan bisnis dan pengguna"],ans:3,exp:"Product Owner memiliki Product Backlog dan satu-satunya pihak yang berwenang menentukan urutan prioritas."},
+{q:"Tiga pilar utama yang menopang Pengendalian Proses Empiris dalam Scrum adalah:",opts:["Perencanaan, Pelaksanaan, Pengecekan","Kolaborasi, Komunikasi, Koordinasi","Transparansi, Inspeksi, Adaptasi","Inisiasi, Iterasi, Integrasi"],ans:2,exp:"Empirisme Scrum bertumpu pada Transparansi, Inspeksi, dan Adaptasi."},
+{q:"Transparansi dalam Scrum berarti:",opts:["Hanya pimpinan tim yang boleh mengakses status pekerjaan anggota lain","Kode sumber proyek harus tersedia dan dapat diakses oleh masyarakat umum","Tim wajib membuat laporan tertulis harian untuk disampaikan kepada manajemen","Seluruh aspek proses dan hasil kerja dapat dilihat semua pihak yang terlibat"],ans:3,exp:"Transparansi memastikan semua pihak memiliki pemahaman yang sama tentang status proyek."},
+{q:"Prinsip Time-boxing dalam Scrum berarti:",opts:["Tim hanya bekerja sesuai jam kantor resmi dan dilarang bekerja lembur","Seluruh proyek harus diselesaikan dalam batas waktu yang ditetapkan di awal","Anggota tim membagi waktu mereka secara merata untuk setiap jenis tugas","Setiap kegiatan Scrum memiliki batas waktu maksimum yang tidak boleh dilampaui"],ans:3,exp:"Time-boxing menetapkan batas waktu ketat untuk setiap event Scrum — Daily Standup maksimal 15 menit, Sprint Planning maksimal 8 jam."},
+{q:"Organisasi Mandiri dalam Scrum berarti:",opts:["Tim memilih sendiri proyek yang ingin mereka kerjakan tanpa arahan apapun","Tim menetapkan gaji dan tunjangan mereka sendiri berdasarkan kinerja sprint","Tim memutuskan cara terbaik menyelesaikan pekerjaan tanpa didikte pihak luar","Setiap anggota bekerja independen penuh tanpa koordinasi dengan rekan tim"],ans:2,exp:"Self-organization berarti manajemen menetapkan tujuan, tim yang menentukan cara terbaiknya."},
+{q:"Sprint dalam Scrum paling tepat digambarkan sebagai:",opts:["Rapat perencanaan bulanan yang melibatkan seluruh pemangku kepentingan","Laporan kemajuan berkala yang diserahkan kepada klien setiap minggunya","Satu siklus iterasi yang menghasilkan increment produk yang dapat digunakan","Pertemuan evaluasi antara tim dan manajemen di penghujung proyek"],ans:2,exp:"Sprint adalah satu siklus iterasi (1–4 minggu) yang menghasilkan increment produk yang nyata dan dapat digunakan."},
+{q:"Tujuan utama Daily Standup dalam Scrum adalah:",opts:["Melaporkan kemajuan pekerjaan harian kepada manajer proyek secara langsung","Membahas perubahan kebutuhan terbaru yang diminta oleh klien eksternal","Mengevaluasi kualitas kode yang ditulis oleh tim pada hari sebelumnya","Menyinkronkan pekerjaan tim dan mengidentifikasi hambatan yang perlu diatasi"],ans:3,exp:"Daily Standup adalah rapat sinkronisasi — koordinasi tim untuk menyelaraskan pekerjaan dan mengidentifikasi hambatan."},
+{q:"Tiga hal yang disampaikan setiap anggota dalam Daily Standup adalah:",opts:["Target minggu ini, kendala anggaran, dan penanggung jawab setiap tugas","Jam kerja kemarin, apakah target terpenuhi, dan kapan fitur akan selesai","Siapa mengerjakan apa, kapan selesai, dan estimasi waktu tersisa","Yang dikerjakan kemarin, yang akan dikerjakan hari ini, dan hambatan yang ada"],ans:3,exp:"Tiga pertanyaan Daily Standup: apa yang sudah dikerjakan kemarin, apa yang akan dikerjakan hari ini, dan adakah hambatan."},
+{q:"Sprint Review berbeda dari Sprint Retrospective karena Sprint Review berfokus pada:",opts:["Evaluasi cara kerja tim dan proses yang perlu ditingkatkan ke depannya","Perencanaan tugas teknis yang akan dikerjakan pada sprint berikutnya","Identifikasi hambatan teknis yang ditemui selama sprint berlangsung","Menampilkan hasil kerja kepada pemangku kepentingan dan mendapat umpan balik"],ans:3,exp:"Sprint Review adalah hari presentasi — tim menampilkan increment yang selesai dan pemangku kepentingan memberikan umpan balik."},
+{q:"Sprint Retrospective adalah sesi yang berfokus pada:",opts:["Menilai kualitas teknis produk yang dihasilkan selama sprint berlangsung","Cara kerja tim — apa yang berjalan baik dan apa yang perlu diperbaiki","Penetapan target bisnis dan fitur utama untuk sprint berikutnya","Penilaian kinerja individual setiap anggota tim oleh Scrum Master"],ans:1,exp:"Sprint Retrospective mengevaluasi proses kerja tim — hasilnya adalah rencana tindakan untuk meningkatkan cara kerja di sprint berikutnya."},
+{q:"Urutan event yang benar di akhir setiap Sprint adalah:",opts:["Retrospective → Review → Planning sprint berikutnya","Review → Planning → Retrospective","Review → Retrospective → Planning sprint berikutnya","Planning → Review → Retrospective"],ans:2,exp:"Urutan akhir sprint: Sprint Review → Sprint Retrospective → Sprint Planning sprint berikutnya."},
+{q:"Product Backlog Refinement dilakukan selama sprint berjalan dengan tujuan:",opts:["Mendistribusikan ulang tugas kepada anggota yang beban kerjanya lebih ringan","Menampilkan hasil kerja kepada klien untuk mendapatkan persetujuan resmi","Mengevaluasi kinerja tim dan memberikan penilaian kepada setiap anggota","Memperbarui, memperjelas, memperkirakan, dan memecah item backlog mendatang"],ans:3,exp:"Refinement mempersiapkan item backlog agar siap diambil di sprint berikutnya — diperjelas, dipecah, dan diberi estimasi lebih akurat."},
+{q:"Prioritisasi berbasis nilai dalam Scrum berarti item yang dikerjakan lebih dahulu adalah yang:",opts:["Paling mudah dan cepat diselesaikan oleh tim pengembang saat ini","Paling lama ada di Product Backlog tanpa pernah dikerjakan sebelumnya","Memberikan nilai bisnis tertinggi bagi pengguna dan organisasi","Paling diinginkan secara teknis oleh mayoritas anggota tim pengembang"],ans:2,exp:"Scrum memprioritaskan berdasarkan nilai bisnis — item yang memberikan manfaat terbesar bagi pengguna dikerjakan lebih dahulu."},
+{q:"Burndown Chart dalam Scrum digunakan untuk menunjukkan:",opts:["Sisa pekerjaan yang harus diselesaikan dibandingkan waktu yang tersisa","Jumlah anggota tim yang aktif bekerja setiap harinya selama sprint","Total bug yang ditemukan dan berhasil diperbaiki selama sprint berlangsung","Perbandingan kecepatan kerja antar anggota tim secara individual"],ans:0,exp:"Burndown Chart adalah alat transparansi — garis menurun menunjukkan sisa pekerjaan yang berkurang seiring berjalannya waktu dalam sprint."},
+{q:"Kolaborasi dalam Scrum berbeda dari sekadar 'bekerja sama' karena:",opts:["Anggota tim hanya mengerjakan bagian yang menjadi tanggung jawabnya sendiri","Tim berkumpul dalam satu ruangan agar lebih mudah berkomunikasi setiap hari","Setiap anggota membuat laporan harian untuk dibagikan kepada seluruh tim","Masukan dari pihak lain diterima dan diintegrasikan untuk menghasilkan solusi lebih baik"],ans:3,exp:"Kolaborasi Scrum bukan sekadar pembagian tugas — ini tentang saling menerima masukan dan bersama menghasilkan produk yang lebih baik."},
+{q:"Dalam Pengendalian Proses Empiris, 'Inspeksi' berarti:",opts:["Tinjauan berkala terhadap artefak dan kemajuan untuk mendeteksi penyimpangan dini","Audit keuangan proyek yang dilakukan setiap bulan oleh akuntan eksternal","Pemeriksaan kode oleh pemimpin teknis sebelum setiap rilis produk dilakukan","Penilaian kinerja tahunan setiap anggota tim yang dilakukan oleh manajer SDM"],ans:0,exp:"Inspeksi adalah tinjauan rutin terhadap kemajuan dan artefak untuk mendeteksi masalah sebelum berkembang lebih besar."},
+{q:"Output yang diharapkan setelah Sprint Retrospective selesai adalah:",opts:["Versi terbaru Product Backlog yang telah diprioritaskan ulang oleh Product Owner","Dokumen laporan formal yang diserahkan dan diarsipkan oleh manajemen senior","Daftar fitur baru yang akan segera ditambahkan ke dalam produk berikutnya","Rencana tindakan konkret untuk meningkatkan cara kerja di sprint berikutnya"],ans:3,exp:"Output Retrospective adalah komitmen tim untuk mengimplementasikan perbaikan spesifik — bukan dokumen formal."},
+{q:"Perbedaan utama antara Product Backlog dan Sprint Backlog adalah:",opts:["Product Backlog berisi semua kebutuhan produk, Sprint Backlog berisi pilihan untuk sprint ini","Product Backlog dibuat sekali di awal dan tidak pernah berubah sepanjang proyek","Sprint Backlog dimiliki Product Owner, Product Backlog dimiliki Tim Pengembang","Keduanya berisi item yang identik namun disusun dengan format penulisan berbeda"],ans:0,exp:"Product Backlog adalah daftar dinamis semua kebutuhan produk milik PO. Sprint Backlog adalah subset yang dipilih Tim Pengembang untuk sprint ini."},
+{q:"Sprint Goal paling tepat digambarkan sebagai:",opts:["Daftar lengkap semua tugas teknis yang harus diselesaikan selama sprint","Dokumen persetujuan antara tim dan klien tentang fitur yang dibangun","Tujuan nilai bisnis tunggal yang terfokus dan menjadi arah utama sprint","Laporan ringkas hasil kerja sprint yang diserahkan kepada manajemen"],ans:2,exp:"Sprint Goal adalah tujuan tunggal yang memberikan fokus dan makna bagi sprint — semua keputusan tim mengacu padanya."},
+{q:"Cara yang tepat mengurutkan item di Product Backlog adalah berdasarkan:",opts:["Nilai bisnis, tingkat risiko, dan ketergantungan antar fitur yang ada","Urutan kemunculannya dalam dokumen spesifikasi kebutuhan awal","Preferensi teknis mayoritas anggota tim pengembang saat ini","Urutan abjad nama fitur agar mudah ditemukan saat dibutuhkan"],ans:0,exp:"Product Backlog diurutkan berdasarkan nilai bisnis bagi pengguna, tingkat risiko, dan ketergantungan antar fitur."},
+{q:"Sebuah tim sprint satu minggu terdiri dari empat pengembang dengan ketersediaan 75%. Kapasitas tim untuk sprint tersebut adalah:",opts:["20 orang-hari tersedia untuk seluruh pekerjaan sprint","16 orang-hari tersedia untuk seluruh pekerjaan sprint","12 orang-hari tersedia untuk seluruh pekerjaan sprint","15 orang-hari tersedia untuk seluruh pekerjaan sprint"],ans:3,exp:"4 pengembang × 5 hari × 75% = 15 orang-hari kapasitas yang tersedia untuk sprint."},
+{q:"Product Backlog bersifat dinamis berarti:",opts:["Isinya terus berkembang — item ditambah, diperbarui, atau dihapus sesuai kebutuhan","Formatnya berubah setiap kali ada anggota tim baru yang bergabung ke tim","Setiap item wajib diperbarui minimal satu kali setiap hari oleh Product Owner","Hanya tim pengembang yang memiliki hak untuk mengubah isinya kapanpun"],ans:0,exp:"Product Backlog adalah dokumen hidup — ia berevolusi seiring berkembangnya produk dan pemahaman tentang kebutuhan pengguna."},
+{q:"Dalam Sprint Planning, dua pertanyaan utama yang harus dijawab adalah:",opts:["Siapa mengerjakan apa dan kapan masing-masing tugas harus selesai","Apa yang gagal di sprint sebelumnya dan bagaimana cara memperbaikinya","Apa yang dapat diselesaikan sprint ini dan bagaimana cara menyelesaikannya","Berapa anggaran tersedia dan bagaimana cara mengalokasikannya secara adil"],ans:2,exp:"Sprint Planning menjawab: apa yang dapat tim selesaikan sprint ini, dan bagaimana pekerjaan itu akan diselesaikan."},
+{q:"Definition of Done dalam Scrum adalah:",opts:["Standar bersama yang mendefinisikan kriteria agar sebuah item dianggap selesai","Daftar tugas yang ditugaskan kepada setiap pengembang di awal sprint dimulai","Dokumen formal yang wajib ditandatangani klien saat menerima produk akhir","Target tanggal penyelesaian yang ditetapkan manajemen untuk setiap fitur"],ans:0,exp:"Definition of Done adalah kesepakatan tim tentang standar kualitas minimum yang harus dipenuhi sebelum item bisa dinyatakan selesai."},
+{q:"Epic dalam Scrum paling tepat digambarkan sebagai:",opts:["Satu user story dengan tingkat prioritas paling tinggi di seluruh backlog","Rapat sprint planning yang melibatkan lebih dari satu tim secara bersamaan","Rilis produk yang berisi semua fitur yang sudah selesai dibangun tim","Kelompok kebutuhan besar yang saling berkaitan dan perlu dipecah menjadi user story"],ans:3,exp:"Epic adalah unit pekerjaan besar yang terlalu besar untuk satu sprint — dipecah menjadi beberapa user story yang lebih kecil dan terukur."},
+{q:"User Story yang baik ditulis dengan format yang mengandung tiga elemen utama:",opts:["Nama fitur, tanggal target penyelesaian, dan estimasi jam pengerjaan","Peran pengguna, fitur yang diinginkan, dan manfaat yang diperoleh pengguna","Judul singkat, deskripsi teknis lengkap, dan kriteria pengujian otomatis","Tingkat prioritas, estimasi kompleksitas, dan nama pengembang penanggung jawab"],ans:1,exp:"Format standar: 'Sebagai [peran], saya ingin [fitur], agar [manfaat]' — berfokus pada nilai bagi pengguna, bukan detail teknis."},
+{q:"Acceptance Criteria dalam Scrum berfungsi untuk:",opts:["Mendefinisikan kondisi spesifik yang harus terpenuhi agar user story dianggap selesai","Menetapkan siapa yang bertanggung jawab mengerjakan setiap user story dalam sprint","Memperkirakan berapa lama waktu yang dibutuhkan untuk menyelesaikan sebuah fitur","Mendokumentasikan semua keputusan teknis yang diambil tim selama sprint berlangsung"],ans:0,exp:"Acceptance Criteria mendefinisikan kondisi yang dapat diverifikasi — kapan sebuah user story memenuhi kebutuhan pengguna dan dapat dianggap selesai."},
+{q:"Format 'Diberikan–Ketika–Maka' dalam Acceptance Criteria digunakan karena:",opts:["Ini adalah format resmi yang diwajibkan oleh standar internasional Scrum Guide","Lebih mudah dipahami oleh manajer senior yang tidak berlatar belakang teknis","Menggantikan kebutuhan akan Product Backlog dalam proyek berskala kecil","Menghasilkan kondisi yang spesifik, tidak ambigu, dan dapat diverifikasi secara objektif"],ans:3,exp:"Format Diberikan-Ketika-Maka membuat setiap kriteria dapat diuji secara objektif dan tidak menimbulkan penafsiran ganda."},
+{q:"Sebuah tim menemukan beberapa item di Product Backlog sudah tidak relevan karena arah produk berubah. Langkah paling tepat adalah:",opts:["Mempertahankan semua item agar riwayat backlog tetap terdokumentasi lengkap","Menghapus atau mengarsipkan item tidak relevan saat sesi Product Backlog Refinement","Memindahkan item tersebut ke Sprint Backlog dan menyelesaikannya lebih dahulu","Menunggu Sprint Review untuk mendiskusikannya bersama pemangku kepentingan dulu"],ans:1,exp:"Refinement adalah waktu yang tepat untuk membersihkan backlog — item tidak relevan dihapus agar tim fokus pada yang memberikan nilai."},
+{q:"Dokumen Spesifikasi Kebutuhan Perangkat Lunak dalam konteks Scrum berfungsi sebagai:",opts:["Sumber referensi utama yang dipecah bertahap untuk mengisi Product Backlog","Dokumen pengganti Product Backlog yang digunakan di tahap awal proyek saja","Laporan akhir yang diserahkan kepada klien setelah seluruh proyek selesai","Panduan teknis eksklusif yang hanya boleh dibaca oleh tim pengembang inti"],ans:0,exp:"Scrum tidak membuang dokumen kebutuhan — ia menjadi sumber kebenaran yang dipecah secara bertahap menjadi item backlog sesuai prioritas."},
+{q:"Alur konversi dari dokumen kebutuhan ke Sprint Planning yang benar adalah:",opts:["Sprint Planning → User Story → Epic → Backlog → Dokumen Kebutuhan","User Story → Dokumen Kebutuhan → Backlog → Epic → Sprint Planning","Dokumen Kebutuhan → Epic → User Story → Product Backlog → Sprint Planning","Epic → Dokumen Kebutuhan → Sprint Planning → User Story → Product Backlog"],ans:2,exp:"Alur yang benar: Dokumen Kebutuhan → Epic → User Story → Product Backlog → Sprint Planning."},
+{q:"Fitur 'manajemen jadwal perkuliahan' dalam sebuah sistem akademik paling tepat dikategorikan sebagai:",opts:["User Story, karena dapat langsung dikerjakan dalam satu sprint penuh","Sprint Goal, karena menjadi tujuan utama tim pengembang untuk sprint ini","Acceptance Criteria, karena mendefinisikan kondisi yang harus dipenuhi sistem","Epic, karena mencakup banyak fitur turunan yang terlalu besar untuk satu sprint"],ans:3,exp:"'Manajemen jadwal' mencakup banyak fitur — terlalu besar untuk satu sprint sehingga dikategorikan sebagai Epic."},
+{q:"Dari pilihan berikut, User Story yang paling tepat formatnya adalah:",opts:["Sistem harus dapat menyimpan data pendaftaran ke dalam basis data relasional","Sebagai mahasiswa, saya ingin melihat jadwal kuliah agar dapat mengatur waktu belajar","Fitur pendaftaran mata kuliah dengan validasi batas kredit maksimum per semester","Buat halaman pendaftaran dengan tabel mata kuliah beserta tombol konfirmasi"],ans:1,exp:"User Story yang baik ditulis dari perspektif pengguna dengan format Sebagai-Saya Ingin-Agar, berfokus pada manfaat bukan detail teknis."},
+{q:"Dari pilihan berikut, Sprint Goal yang paling tepat untuk sprint pertama sebuah sistem akademik adalah:",opts:["Pengguna dapat masuk ke sistem dan melihat informasi akademik dasarnya","Seluruh fitur sistem selesai dibangun dan siap untuk diluncurkan ke pengguna","Semua integrasi dengan sistem pihak ketiga telah selesai dikonfigurasi tim","Laporan akademik lengkap dapat diekspor dalam berbagai format yang berbeda"],ans:0,exp:"Sprint Goal harus terfokus dan dapat dicapai satu sprint. Fitur masuk dan lihat informasi dasar adalah fondasi logis untuk sprint pertama."},
+{q:"Product Owner ingin memasukkan tiga fitur besar ke Sprint 1 meski kapasitas tim hanya cukup untuk satu. Respons Scrum Master yang paling tepat adalah:",opts:["Menyetujui karena Product Owner memiliki otoritas penuh atas segala keputusan sprint","Meminta tim bekerja lembur agar ketiga fitur dapat diselesaikan tepat waktu","Memecah ketiga fitur menjadi lebih kecil agar semuanya muat dalam sprint ini","Membantu tim memilih satu fitur berprioritas tinggi yang sesuai kapasitas tersedia"],ans:3,exp:"Scrum Master melindungi tim dari overcommitment — komitmen sprint harus realistis sesuai kapasitas yang tersedia."},
+{q:"Sebuah fitur membutuhkan data dari fitur lain yang belum selesai dibangun. Dalam Product Backlog, hal ini dicatat sebagai:",opts:["Risiko proyek yang harus segera dilaporkan ke manajemen senior","Ketergantungan antar fitur yang menjadi pertimbangan urutan prioritas","Hambatan teknis yang harus diatasi oleh Scrum Master sendirian","Alasan valid untuk menunda seluruh sprint hingga fitur prasyarat selesai"],ans:1,exp:"Ketergantungan antar fitur adalah faktor penting dalam menentukan urutan prioritas Product Backlog — fitur prasyarat perlu didahulukan."},
+{q:"Tim sedang di Sprint 2 ketika pengguna meminta perubahan signifikan pada fitur Sprint 1. Tindakan paling tepat sesuai prinsip Scrum adalah:",opts:["Menghentikan Sprint 2 dan segera mengerjakan perubahan yang diminta pengguna","Mengabaikan permintaan karena fitur tersebut sudah dinyatakan selesai sebelumnya","Menambahkan kebutuhan perubahan ke Product Backlog dan menjadwalkan ke sprint berikutnya","Meminta pengguna menunggu hingga akhir proyek untuk semua perubahan yang ada"],ans:2,exp:"Agile menyambut perubahan — umpan balik dimasukkan ke backlog, diprioritaskan, dan dijadwalkan ke sprint berikutnya tanpa mengganggu sprint berjalan."},
+{q:"Sebuah Acceptance Criteria berbunyi: 'Ketika pengguna memasukkan kata sandi salah tiga kali berturut-turut, akun dikunci selama 15 menit.' Kriteria ini baik karena:",opts:["Ditulis dalam bahasa teknis yang mudah dipahami oleh seluruh anggota tim pengembang","Mencakup semua kemungkinan skenario yang dapat terjadi pada fitur yang dibangun","Disetujui oleh seluruh anggota tim pengembang sebelum sprint resmi dimulai","Spesifik, dapat diuji secara objektif, dan mendefinisikan perilaku sistem dengan jelas"],ans:3,exp:"Acceptance Criteria yang baik harus spesifik, tidak ambigu, dan dapat diverifikasi melalui pengujian."},
+{q:"Mengapa dokumen kebutuhan tidak dibuang meskipun tim sudah menggunakan Product Backlog?",opts:["Ia tetap menjadi sumber referensi kebenaran yang dipecah bertahap ke dalam backlog","Karena merupakan dokumen legal yang diperlukan untuk kontrak dengan klien proyek","Karena manajemen senior mengharuskan ada sebagai bukti perencanaan awal proyek","Karena tim pengembang tidak bisa bekerja tanpa spesifikasi teknis yang sangat lengkap"],ans:0,exp:"Dokumen kebutuhan tetap relevan sebagai sumber kebenaran — ia dipecah bertahap ke dalam backlog sesuai prioritas."},
+{q:"Tim sprint satu minggu memiliki 3 pengembang ketersediaan 80% dan 5 item backlog total 15 orang-hari. Keputusan paling tepat saat Sprint Planning adalah:",opts:["Mengambil item senilai 12 orang-hari saja sesuai kapasitas tim yang tersedia","Mengambil semua 5 item karena tim bisa bekerja lebih keras dari biasanya","Meminta Product Owner mengurangi scope setiap item agar semua dapat masuk","Menambah satu pengembang sementara untuk menutupi kekurangan kapasitas yang ada"],ans:0,exp:"3 × 5 × 80% = 12 orang-hari kapasitas. Tim memilih item yang totalnya tidak melebihi kapasitas — komitmen harus realistis."},
+{q:"Sebuah tim memiliki velocity tiga sprint terakhir: 20, 22, dan 18 poin. Estimasi kapasitas paling tepat untuk sprint berikutnya adalah:",opts:["22 poin karena itu adalah hasil terbaik yang pernah berhasil dicapai tim","18 poin karena lebih aman menggunakan estimasi paling konservatif yang ada","Sekitar 20 poin menggunakan rata-rata velocity historis sebagai acuan realistis","30 poin karena tim perlu terus meningkatkan produktivitasnya setiap sprint"],ans:2,exp:"Rata-rata velocity historis (20+22+18)/3 = 20 poin adalah acuan paling realistis untuk sprint berikutnya."},
+{q:"Dalam Retrospective, tim mengidentifikasi komunikasi antar anggota masih kurang efektif. Rencana tindakan paling tepat adalah:",opts:["Menambah jumlah rapat formal menjadi dua sesi setiap harinya mulai sprint depan","Meminta Scrum Master membuat laporan komunikasi harian untuk setiap anggota","Mengganti anggota yang dinilai kurang komunikatif dengan anggota yang baru","Menyepakati satu saluran komunikasi utama dan waktu respons maksimum yang jelas"],ans:3,exp:"Rencana tindakan Retrospective harus spesifik dan langsung dapat diterapkan — menyepakati saluran dan waktu respons adalah langkah konkret yang terukur."},
+{q:"Tim Scrum mengembangkan sistem manajemen perpustakaan. Setelah Sprint Review, pemangku kepentingan meminta tambahan fitur yang sebelumnya tidak ada di backlog. Langkah paling sesuai adalah:",opts:["Menghentikan sprint berjalan dan memulai dari awal dengan fitur baru tersebut","Menolak permintaan karena tidak termasuk dalam ruang lingkup awal proyek","Product Owner menambahkan fitur ke backlog, menilai prioritasnya, dan menjadwalkan ke sprint mendatang","Tim langsung mengerjakan fitur baru tersebut di luar sprint yang sedang berjalan"],ans:2,exp:"Ini adalah Agile yang bekerja dengan baik — umpan balik disambut, ditambahkan ke backlog, diprioritaskan PO, dan dijadwalkan ke sprint mendatang."}
+];
+
+const QUIZ_SIZE=30, CIRC=2*Math.PI*21;
+let session=[],curQ=0,okCount=0,errCount=0;
+let answered=false,timerID=null,timeLeft=30;
+let playerName='',playerNIM='',log=[];
+let startTime;
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function buildSession(){
+  return shuffle(BANK).slice(0,QUIZ_SIZE).map(q=>{
+    const sh=shuffle([0,1,2,3]);
+    return{q:q.q,opts:sh.map(i=>q.opts[i]),ans:sh.indexOf(q.ans),exp:q.exp};
+  });
+}
+
+function startQuiz(){
+  const sel=document.getElementById('nameSelect');
+  const nim=document.getElementById('nimInput').value.trim();
+  if(!sel.value){alert('Pilih nama terlebih dahulu.');return;}
+  if(!nim){alert('Masukkan NIM terlebih dahulu.');return;}
+  playerName=sel.value; playerNIM=nim;
+  session=buildSession(); curQ=0; okCount=0; errCount=0; log=[];
+  startTime=Date.now();
+  document.getElementById('startScreen').style.display='none';
+  document.getElementById('quizScreen').style.display='block';
+  updateChips(); loadQ();
+}
+
+function loadQ(){
+  if(curQ>=QUIZ_SIZE){showResult();return;}
+  answered=false;
+  const d=session[curQ];
+  document.getElementById('qLabel').textContent='Soal '+(curQ+1)+' dari '+QUIZ_SIZE;
+  document.getElementById('qText').textContent=d.q;
+  document.getElementById('progFill').style.width=((curQ/QUIZ_SIZE)*100)+'%';
+  document.getElementById('progText').textContent=curQ+' / '+QUIZ_SIZE;
+  document.getElementById('nextBtn').style.display='none';
+  document.getElementById('skipBtn').style.display='inline-flex';
+  const fb=document.getElementById('feedbackBox');
+  fb.className='feedback'; fb.textContent='';
+  const box=document.getElementById('optBox');
+  box.innerHTML='';
+  ['A','B','C','D'].forEach((ltr,i)=>{
+    const el=document.createElement('div');
+    el.className='option';
+    el.innerHTML=`<span class="opt-key">${ltr}</span><span>${d.opts[i]}</span>`;
+    el.onclick=()=>pick(i,el);
+    box.appendChild(el);
+  });
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timerID); timeLeft=30; renderTimer();
+  timerID=setInterval(()=>{
+    timeLeft--; renderTimer();
+    if(timeLeft<=0){clearInterval(timerID);if(!answered)autoAdvance();}
+  },1000);
+}
+
+function renderTimer(){
+  const arc=document.getElementById('timerArc');
+  document.getElementById('timerNum').textContent=timeLeft;
+  arc.style.strokeDashoffset=CIRC*(1-timeLeft/30);
+  arc.style.stroke=timeLeft<=10?'var(--danger)':timeLeft<=20?'var(--warn)':'var(--blue)';
+}
+
+function pick(idx,el){
+  if(answered)return;
+  answered=true; clearInterval(timerID);
+  const d=session[curQ];
+  const opts=document.querySelectorAll('.option');
+  opts.forEach(o=>o.classList.add('opt-disabled'));
+  const ok=idx===d.ans;
+  if(ok){el.classList.add('opt-correct');okCount++;}
+  else{el.classList.add('opt-wrong');opts[d.ans].classList.add('opt-correct');errCount++;}
+  log.push({qi:curQ,sel:idx,ans:d.ans,status:ok?'correct':'wrong'});
+  updateChips(); showFB(ok?'correct':'wrong',d.exp);
+  document.getElementById('skipBtn').style.display='none';
+  document.getElementById('nextBtn').style.display='inline-flex';
+}
+
+function autoAdvance(){
+  answered=true;
+  const d=session[curQ];
+  const opts=document.querySelectorAll('.option');
+  opts.forEach(o=>o.classList.add('opt-disabled'));
+  opts[d.ans].classList.add('opt-correct');
+  errCount++;
+  log.push({qi:curQ,sel:-1,ans:d.ans,status:'timeout'});
+  updateChips(); showFB('timeout','Waktu habis! Jawaban benar: '+d.opts[d.ans]);
+  document.getElementById('skipBtn').style.display='none';
+  document.getElementById('nextBtn').style.display='inline-flex';
+  setTimeout(()=>{curQ<QUIZ_SIZE-1?nextQ():showResult();},1800);
+}
+
+function skipQ(){
+  if(answered)return;
+  clearInterval(timerID); answered=true;
+  const d=session[curQ];
+  const opts=document.querySelectorAll('.option');
+  opts.forEach(o=>o.classList.add('opt-disabled'));
+  opts[d.ans].classList.add('opt-correct');
+  errCount++;
+  log.push({qi:curQ,sel:-1,ans:d.ans,status:'timeout'});
+  updateChips(); showFB('timeout','Dilewati. Jawaban benar: '+d.opts[d.ans]);
+  document.getElementById('skipBtn').style.display='none';
+  document.getElementById('nextBtn').style.display='inline-flex';
+}
+
+function nextQ(){curQ++;loadQ();}
+
+function showFB(type,msg){
+  const fb=document.getElementById('feedbackBox');
+  const ic=type==='correct'?'✅':type==='wrong'?'❌':'⏰';
+  fb.className='feedback show fb-'+type;
+  fb.textContent=ic+' '+msg;
+}
+
+function updateChips(){
+  document.getElementById('chipOk').textContent='✓ '+okCount;
+  document.getElementById('chipErr').textContent='✗ '+errCount;
+}
+
+function durasi(){
+  const s=Math.round((Date.now()-startTime)/1000);
+  const m=Math.floor(s/60),ss=s%60;
+  return m+' mnt '+ss+' dtk';
+}
+
+function showResult(){
+  clearInterval(timerID);
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  const pct=Math.round((okCount/QUIZ_SIZE)*100);
+  document.getElementById('stOk').textContent=okCount;
+  document.getElementById('stErr').textContent=errCount;
+  document.getElementById('stPct').textContent=pct+'%';
+  document.getElementById('resPct').textContent=pct+'%';
+  let label;
+  if(pct>=85)label='Sangat Baik 🏆';
+  else if(pct>=75)label='Baik 👍';
+  else if(pct>=65)label='Cukup 📚';
+  else if(pct>=55)label='Perlu Latihan 💪';
+  else label='Pelajari Ulang Materi 📖';
+  document.getElementById('resLabel').textContent=label;
+  document.getElementById('resMeta').textContent=playerName+' · NIM '+playerNIM+' · Kelas 4SI01 · Durasi: '+durasi();
+  window.scrollTo({top:0,behavior:'smooth'});
+  kirimData(pct);
+}
+
+const SCRIPT_URL='GANTI_DENGAN_URL_APPS_SCRIPT';
+
+function kirimData(pct){
+  if(SCRIPT_URL==='GANTI_DENGAN_URL_APPS_SCRIPT')return;
+  document.getElementById('sendingNote').textContent='⏳ Menyimpan hasil...';
+  const payload={
+    timestamp:new Date().toLocaleString('id-ID'),
+    nama:playerName, nim:playerNIM, kelas:'4SI01',
+    skor:pct, benar:okCount, salah:errCount,
+    durasi:durasi(),
+    setsoal:'Set #'+Math.floor(Math.random()*9000+1000)
+  };
+  fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+  .then(()=>{document.getElementById('sendingNote').textContent='✅ Hasil berhasil disimpan.';})
+  .catch(()=>{document.getElementById('sendingNote').textContent='⚠️ Gagal menyimpan. Silakan screenshot halaman ini.';});
+}
+
+function resetQuiz(){
+  document.getElementById('resultScreen').style.display='none';
+  document.getElementById('startScreen').style.display='block';
+  document.getElementById('nameSelect').value='';
+  document.getElementById('nimInput').value='';
+}
+</script>
+</body>
+</html>
